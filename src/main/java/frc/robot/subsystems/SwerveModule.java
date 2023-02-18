@@ -108,6 +108,7 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
+        //ToDo reset turn encoder position to the absolute encoder position.
         m_currentAngle = m_turnEncoder.getPosition();
         desiredState = RevUtils.optimize(desiredState, getHeadingRotation2d());
 

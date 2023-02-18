@@ -31,9 +31,9 @@ public final class Constants {
 
     public static final Translation2d[] kModuleTranslations = {
             new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-            new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+            new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
             new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-            new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)
+            new Translation2d(kWheelBase / 2, -kTrackWidth / 2)
     };
 
     public static final double frontLeftCANCoderOffset = 6;

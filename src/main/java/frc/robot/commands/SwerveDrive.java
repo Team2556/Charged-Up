@@ -34,9 +34,9 @@ public class SwerveDrive extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double throttle = Math.abs(m_throttleInput.getAsDouble()) > 0.05 ? m_throttleInput.getAsDouble() : 0;
-        double strafe = Math.abs(m_strafeInput.getAsDouble()) > 0.05 ? m_strafeInput.getAsDouble() : 0;
-        double rotation = Math.abs(m_rotationInput.getAsDouble()) > 0.05 ? m_rotationInput.getAsDouble() : 0;
+        double throttle = Math.abs(m_throttleInput.getAsDouble()) > 0.15 ? m_throttleInput.getAsDouble() : 0;
+        double strafe = Math.abs(m_strafeInput.getAsDouble()) > 0.15 ? m_strafeInput.getAsDouble() : 0;
+        double rotation = Math.abs(m_rotationInput.getAsDouble()) > 0.15 ? m_rotationInput.getAsDouble() : 0;
         // Forward/Back Throttle, Left/Right Strafe, Left/Right Turn
         m_swerveDrive.drive(throttle * 0.2, strafe * 0.2, rotation * 0.2, m_isFieldRelative, true);
     }
