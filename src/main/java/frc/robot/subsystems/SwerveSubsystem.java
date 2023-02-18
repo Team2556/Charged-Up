@@ -41,7 +41,7 @@ public class SwerveSubsystem extends SubsystemBase {
                             new SwerveModule(
                                     2,
                                     new CANSparkMax(Ports.backLeftTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
-                                    invertMotor(Ports.backLeftDriveMotor),
+                                    new WPI_TalonFX(Ports.backLeftDriveMotor),
                                     new DutyCycleEncoder(Ports.backLeftBoreEncoder),
                                     backLeftCANCoderOffset),
                             ModulePosition.BACK_RIGHT,

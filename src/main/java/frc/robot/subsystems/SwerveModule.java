@@ -108,6 +108,7 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
+        m_currentAngle = m_turnEncoder.getPosition();
         desiredState = RevUtils.optimize(desiredState, getHeadingRotation2d());
 
         double velocity = desiredState.speedMetersPerSecond / (kDriveDistancePerPulse * 10);
@@ -122,6 +123,7 @@ public class SwerveModule extends SubsystemBase {
                         ? m_lastAngle
                         : desiredState.angle.getDegrees() - m_angleOffset; // Prevent rotating module if speed is less than 1%. Prevents Jittering.
         m_turnController.setReference(angle, CANSparkMax.ControlType.kPosition, POS_SLOT);
+        m_lastAngle = angle;
     }
 
     public SwerveModuleState getState() {
