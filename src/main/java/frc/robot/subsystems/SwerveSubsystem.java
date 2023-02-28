@@ -159,6 +159,11 @@ public class SwerveSubsystem extends SubsystemBase {
 
     private void updateSmartDashboard() {}
 
+    public void initializeAngle() {
+        for (SwerveModule module : m_swerveModules.values())
+            module.resetAngleToAbsolute();
+    }
+
     @Override
     public void periodic() {
         updateOdometry();

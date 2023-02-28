@@ -79,8 +79,6 @@ public class SwerveModule extends SubsystemBase {
         m_turnEncoder.setVelocityConversionFactor(kTurnRotationsToDegrees / 60);
 
         m_turnController = m_turnMotor.getPIDController();
-
-//        resetAngleToAbsolute();
     }
 
     public int getModuleNumber() {
@@ -88,7 +86,8 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void resetAngleToAbsolute() {
-        double angle = m_angleOffset - pwmToDegrees(m_angleEncoder.getAbsolutePosition());
+        double angle = RevUtils.placeInAppropriate0To360Scope(pwmToDegrees(m_angleEncoder.getAbsolutePosition()),
+                pwmToDegrees(m_angleEncoder.getAbsolutePosition()) - m_angleOffset);
         m_turnEncoder.setPosition(angle);
     }
 
@@ -108,7 +107,6 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
-        //ToDo reset turn encoder position to the absolute encoder position.
         m_currentAngle = m_turnEncoder.getPosition();
         desiredState = RevUtils.optimize(desiredState, getHeadingRotation2d());
 
@@ -122,7 +120,7 @@ public class SwerveModule extends SubsystemBase {
         double angle =
                 (Math.abs(desiredState.speedMetersPerSecond) <= (kMaxSpeedMetersPerSecond * 0.01))
                         ? m_lastAngle
-                        : desiredState.angle.getDegrees() - m_angleOffset; // Prevent rotating module if speed is less than 1%. Prevents Jittering.
+                        : desiredState.angle.getDegrees(); // Prevent rotating module if speed is less than 1%. Prevents Jittering.
         m_turnController.setReference(angle, CANSparkMax.ControlType.kPosition, POS_SLOT);
         m_lastAngle = angle;
     }

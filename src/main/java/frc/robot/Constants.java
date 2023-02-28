@@ -36,10 +36,10 @@ public final class Constants {
             new Translation2d(kWheelBase / 2, -kTrackWidth / 2)
     };
 
-    public static final double frontLeftCANCoderOffset = 6;
-    public static final double frontRightCANCoderOffset = 6;
-    public static final double backLeftCANCoderOffset = 12.2;
-    public static final double backRightCANCoderOffset = 10.7;
+    public static final double frontLeftCANCoderOffset  = 0.0;
+    public static final double frontRightCANCoderOffset = 0.0;
+    public static final double backLeftCANCoderOffset   = 0.0;
+    public static final double backRightCANCoderOffset  = 0.0;
 
     public static final SwerveDriveKinematics kSwerveKinematics =
             new SwerveDriveKinematics(kModuleTranslations);
