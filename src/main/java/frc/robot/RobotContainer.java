@@ -22,11 +22,13 @@ public class RobotContainer {
 
   SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
-  public static boolean fieldRelativeDriving = false;
+  public static boolean fieldRelativeDriving = true;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xbox1 =
       new CommandXboxController(Constants.OperatorConstants.kDriverControllerPort);
+
+  
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -40,6 +42,7 @@ public class RobotContainer {
                     xbox1::getLeftY,
                     xbox1::getLeftX,
                     xbox1::getRightX,
+                    xbox1.a(),
                     fieldRelativeDriving));
     // Configure the trigger bindings
     configureBindings();

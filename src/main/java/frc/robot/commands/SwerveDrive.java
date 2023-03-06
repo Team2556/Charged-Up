@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.SwerveSubsystem;
 
 import java.util.function.DoubleSupplier;
@@ -9,6 +11,7 @@ public class SwerveDrive extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private final SwerveSubsystem m_swerveDrive;
     private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
+    private final Trigger m_gyroReset;
     private final boolean m_isFieldRelative;
     private static boolean hasReset = false;
 
@@ -17,14 +20,23 @@ public class SwerveDrive extends CommandBase {
      *
      * @param swerveDriveSubsystem The subsystem used by this command.
      */
-    public SwerveDrive(SwerveSubsystem swerveDriveSubsystem, DoubleSupplier throttleInput, DoubleSupplier strafeInput, DoubleSupplier rotationInput, boolean isFieldRelative) {
+    public SwerveDrive(SwerveSubsystem swerveDriveSubsystem, DoubleSupplier throttleInput, 
+            DoubleSupplier strafeInput, DoubleSupplier rotationInput, Trigger gyroReset, boolean isFieldRelative) {
         m_swerveDrive = swerveDriveSubsystem;
         m_throttleInput = throttleInput;
         m_strafeInput = strafeInput;
         m_rotationInput = rotationInput;
+        m_gyroReset = gyroReset;
         m_isFieldRelative = isFieldRelative;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(swerveDriveSubsystem);
+    }
+
+    public void gyroReset() {
+        if (m_gyroReset.getAsBoolean()) {
+            SwerveSubsystem.gyroZero();
+        }
+        // SmartDashboard.putBoolean("a", m_gyroReset.getAsBoolean());
     }
 
     // Called when the command is initially scheduled.
@@ -43,6 +55,7 @@ public class SwerveDrive extends CommandBase {
         double strafe = Math.abs(m_strafeInput.getAsDouble()) > 0.15 ? m_strafeInput.getAsDouble() : 0;
         double rotation = Math.abs(m_rotationInput.getAsDouble()) > 0.15 ? m_rotationInput.getAsDouble() : 0;
         // Forward/Back Throttle, Left/Right Strafe, Left/Right Turn
-        m_swerveDrive.drive(throttle * 0.2, strafe * 0.2, rotation * 0.2, m_isFieldRelative, true);
+        m_swerveDrive.drive(throttle * 0.8, strafe * 0.8, rotation * 0.8, m_isFieldRelative, true);
+        gyroReset();
     }
 }

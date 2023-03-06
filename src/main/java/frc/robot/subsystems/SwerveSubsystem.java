@@ -10,7 +10,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.Swerve.ModulePosition;
 import frc.robot.Constants.Swerve.Ports;
 
@@ -51,7 +55,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                     invertMotor(Ports.backRightDriveMotor),
                                     new DutyCycleEncoder(Ports.backRightBoreEncoder),
                                     backRightCANCoderOffset)));
-    private final AHRS gyro = new AHRS();
+    private final static AHRS gyro = new AHRS();
 
     private final SwerveDriveOdometry m_odometry =
             new SwerveDriveOdometry(
@@ -108,7 +112,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public Rotation2d getHeadingRotation2d() {
-        return Rotation2d.fromDegrees(getHeadingDegrees());
+        return Rotation2d.fromDegrees(-getHeadingDegrees());
     }
 
     public Pose2d getPoseMeters() {
@@ -157,7 +161,13 @@ public class SwerveSubsystem extends SubsystemBase {
         return talonFX;
     }
 
-    private void updateSmartDashboard() {}
+    public static void gyroZero() {
+        gyro.reset();
+    }
+
+    private void updateSmartDashboard() {
+        SmartDashboard.putNumber("gyro", gyro.getAngle());
+    }
 
     public void initializeAngle() {
         for (SwerveModule module : m_swerveModules.values())
