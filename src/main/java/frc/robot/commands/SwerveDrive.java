@@ -13,7 +13,6 @@ public class SwerveDrive extends CommandBase {
     private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
     private final Trigger m_gyroReset;
     private final boolean m_isFieldRelative;
-    private static boolean hasReset = false;
 
     /**
      * Creates a new ExampleCommand.
@@ -42,10 +41,7 @@ public class SwerveDrive extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        if(!hasReset) {
-            m_swerveDrive.initializeAngle();
-            hasReset = true;
-        }
+        m_swerveDrive.initializeAngle();
     }
 
     // Called every time the scheduler runs while the command is scheduled.

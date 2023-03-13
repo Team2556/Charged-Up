@@ -9,9 +9,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import frc.robot.utility.ModuleMap;
-
-import java.util.Map;
 
 public final class Constants {
   public static class OperatorConstants {
@@ -104,10 +101,10 @@ public final class Constants {
       public static final int backRightDriveMotor = 7;
       public static final int backRightTurnMotor = 8;
 
-      public static final int frontLeftBoreEncoder = 2;
-      public static final int frontRightBoreEncoder = 8;
-      public static final int backLeftBoreEncoder = 4;
-      public static final int backRightBoreEncoder = 6;
+      public static final int frontLeftCANCoder = 2;
+      public static final int frontRightCANCoder = 8;
+      public static final int backLeftCANCoder = 4;
+      public static final int backRightCANCoder = 6;
     }
   }
 

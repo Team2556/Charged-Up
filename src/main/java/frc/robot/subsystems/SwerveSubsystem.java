@@ -9,12 +9,8 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.Swerve.ModulePosition;
 import frc.robot.Constants.Swerve.Ports;
 
@@ -32,30 +28,32 @@ public class SwerveSubsystem extends SubsystemBase {
                                     0,
                                     new CANSparkMax(Ports.frontLeftTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     new WPI_TalonFX(Ports.frontLeftDriveMotor),
-                                    new DutyCycleEncoder(Ports.frontLeftBoreEncoder),
+                                    new CANCoder(Ports.frontLeftCANCoder),
                                     frontLeftCANCoderOffset),
                             ModulePosition.FRONT_RIGHT,
                             new SwerveModule(
                                     1,
                                     new CANSparkMax(Ports.frontRightTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     invertMotor(Ports.frontRightDriveMotor),
-                                    new DutyCycleEncoder(Ports.frontRightBoreEncoder),
+                                    new CANCoder(Ports.frontRightCANCoder),
                                     frontRightCANCoderOffset),
                             ModulePosition.BACK_LEFT,
                             new SwerveModule(
                                     2,
                                     new CANSparkMax(Ports.backLeftTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     new WPI_TalonFX(Ports.backLeftDriveMotor),
-                                    new DutyCycleEncoder(Ports.backLeftBoreEncoder),
+                                    new CANCoder(Ports.backLeftCANCoder),
                                     backLeftCANCoderOffset),
                             ModulePosition.BACK_RIGHT,
                             new SwerveModule(
                                     3,
                                     new CANSparkMax(Ports.backRightTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     invertMotor(Ports.backRightDriveMotor),
-                                    new DutyCycleEncoder(Ports.backRightBoreEncoder),
+                                    new CANCoder(Ports.backRightCANCoder),
                                     backRightCANCoderOffset)));
     private final static AHRS gyro = new AHRS();
+
+    private static boolean hasReset = false;
 
     private final SwerveDriveOdometry m_odometry =
             new SwerveDriveOdometry(
@@ -81,7 +79,7 @@ public class SwerveSubsystem extends SubsystemBase {
             double rotation,
             boolean isFieldRelative,
             boolean isOpenLoop) {
-        //ToDo See if it is necessary to disable turning while moving.
+
         throttle *= kMaxSpeedMetersPerSecond;
         strafe *= kMaxSpeedMetersPerSecond;
         rotation *= kMaxRotationRadiansPerSecond;
@@ -170,8 +168,11 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void initializeAngle() {
-        for (SwerveModule module : m_swerveModules.values())
-            module.resetAngleToAbsolute();
+        if(!hasReset) {
+            for (SwerveModule module : m_swerveModules.values())
+                module.resetAngleToAbsolute();
+            hasReset = true;
+        }
     }
 
     @Override
