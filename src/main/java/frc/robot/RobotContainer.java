@@ -13,6 +13,8 @@ import frc.robot.commands.ClawOpenClose;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.commands.SwerveDrive;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -22,8 +24,9 @@ import frc.robot.subsystems.SwerveSubsystem;
  */
 public class RobotContainer {
 
-  SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   Claw clawSubsystem = new Claw();
+
+  SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
   public static boolean fieldRelativeDriving = true;
 
