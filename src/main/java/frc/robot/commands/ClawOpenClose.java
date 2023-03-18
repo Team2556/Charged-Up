@@ -4,32 +4,36 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.Claw;
 
-/** An example command that uses an example subsystem. */
-public class ExampleCommand extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ExampleSubsystem m_subsystem;
+public class ClawOpenClose extends CommandBase {
+  /** Creates a new ClawOpenClose. */
+  private final Claw m_clawSubsystem;
+  private final Trigger m_lBumper;
+  private final Trigger m_rBumper;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public ExampleCommand(ExampleSubsystem subsystem) {
-    m_subsystem = subsystem;
+  public ClawOpenClose(Claw clawSubsystem, Trigger lBumper, Trigger rBumper) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    m_clawSubsystem = clawSubsystem;
+    m_lBumper = lBumper;
+    m_rBumper = rBumper;
+    addRequirements(clawSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    Claw.clawReset();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    Claw.clawOpenButton(m_rBumper.getAsBoolean());
+    Claw.clawCloseButton(m_lBumper.getAsBoolean());
+  }
 
   // Called once the command ends or is interrupted.
   @Override
