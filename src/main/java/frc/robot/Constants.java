@@ -113,7 +113,4 @@ public final class Constants {
     OPENLOOP,
     CLOSEDLOOP
   }
-
-public static double kTurnToAngleP;
-public static double kTurnToAngleTolerance;
 }
