@@ -9,7 +9,9 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.ClawOpenClose;
 import frc.robot.commands.SwerveDrive;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /**
@@ -21,6 +23,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class RobotContainer {
 
   SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  Claw clawSubsystem = new Claw();
 
   public static boolean fieldRelativeDriving = true;
 
@@ -44,10 +47,13 @@ public class RobotContainer {
                     xbox1::getRightX,
                     xbox1.a(),
                     fieldRelativeDriving));
-    // Configure the trigger bindings
-    configureBindings();
+    
+    clawSubsystem.setDefaultCommand(
+            new ClawOpenClose(
+                    clawSubsystem,
+                    xbox1.leftBumper(),
+                    xbox1.rightBumper()));      
   }
-
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary

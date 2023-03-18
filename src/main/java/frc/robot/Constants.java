@@ -100,6 +100,7 @@ public final class Constants {
       public static final int backLeftTurnMotor = 4;
       public static final int backRightDriveMotor = 7;
       public static final int backRightTurnMotor = 8;
+      public static final int clawMove = 9;
 
       public static final int frontLeftCANCoder = 2;
       public static final int frontRightCANCoder = 8;
