@@ -8,30 +8,28 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Claw;
 
-public class ClawOpenClose extends CommandBase {
-  /** Creates a new ClawOpenClose. */
-  private final Claw m_clawSubsystem;
-  private final Trigger m_lBumper;
-  private final Trigger m_rBumper;
+public class ClawPullPush extends CommandBase {
+  /** Creates a new ClawPullPush. */
+  private Claw m_clawSpinSubsystem;
+  private Trigger m_x;
+  private Trigger m_y;
 
-  public ClawOpenClose(Claw clawSubsystem, Trigger lBumper, Trigger rBumper) {
+  public ClawPullPush(Claw clawSpinSubsystem, Trigger x, Trigger y) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_clawSubsystem = clawSubsystem;
-    m_lBumper = lBumper;
-    m_rBumper = rBumper;
-    addRequirements(m_clawSubsystem);
+    m_clawSpinSubsystem = clawSpinSubsystem;
+    m_x = x;
+    m_y = y;
+    addRequirements(m_clawSpinSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    Claw.clawReset();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Claw.clawOpenCloseButton(m_rBumper.getAsBoolean(), m_lBumper.getAsBoolean());
+    Claw.clawButton(m_x.getAsBoolean(), m_y.getAsBoolean());
   }
 
   // Called once the command ends or is interrupted.
