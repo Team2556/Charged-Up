@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -70,6 +71,10 @@ public class RobotContainer {
      compressorSubsystem.setDefaultCommand(
             new CompressorCommand(
                     compressorSubsystem));
+    turntableSubsystem.setDefaultCommand(
+            new TurntableSpin(
+                      turntableSubsystem,
+                      xbox1.b()));//,
   }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
