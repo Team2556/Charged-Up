@@ -55,6 +55,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     private static boolean hasReset = false;
 
+    private static double rollOffset = 0.0;
+
     private final SwerveDriveOdometry m_odometry =
             new SwerveDriveOdometry(
                     kSwerveKinematics,
@@ -106,7 +108,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public double getHeadingDegrees() {
-        return Math.IEEEremainder(gyro.getPitch(), 360);
+        return Math.IEEEremainder(gyro.getAngle(), 360);
     }
 
     public Rotation2d getHeadingRotation2d() {
@@ -164,7 +166,11 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     private void updateSmartDashboard() {
-        SmartDashboard.putNumber("gyro", gyro.getPitch());
+        SmartDashboard.putNumber("gyro angle", gyro.getAngle());
+        SmartDashboard.putNumber("gyro roll", gyro.getRoll());
+        SmartDashboard.putNumber("gyro pitch", gyro.getPitch());
+        SmartDashboard.putNumber("gyro yaw", gyro.getYaw());
+        SmartDashboard.putNumber("robot", getHeadingRotation2d().getDegrees());
     }
 
     public void initializeAngle() {
