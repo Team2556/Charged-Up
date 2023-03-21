@@ -32,7 +32,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                     frontLeftCANCoderOffset),
                             ModulePosition.FRONT_RIGHT,
                             new SwerveModule(
-                                    1,
+                                    3,
                                     new CANSparkMax(Ports.frontRightTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     invertMotor(Ports.frontRightDriveMotor),
                                     new CANCoder(Ports.frontRightCANCoder),
@@ -46,7 +46,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                     backLeftCANCoderOffset),
                             ModulePosition.BACK_RIGHT,
                             new SwerveModule(
-                                    3,
+                                    1,
                                     new CANSparkMax(Ports.backRightTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     invertMotor(Ports.backRightDriveMotor),
                                     new CANCoder(Ports.backRightCANCoder),
