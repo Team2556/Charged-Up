@@ -106,7 +106,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public double getHeadingDegrees() {
-        return Math.IEEEremainder(gyro.getAngle(), 360);
+        return Math.IEEEremainder(gyro.getPitch(), 360);
     }
 
     public Rotation2d getHeadingRotation2d() {
@@ -164,7 +164,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     private void updateSmartDashboard() {
-        SmartDashboard.putNumber("gyro", gyro.getAngle());
+        SmartDashboard.putNumber("gyro", gyro.getPitch());
     }
 
     public void initializeAngle() {
