@@ -17,7 +17,7 @@ public class TurntableSubsystem extends SubsystemBase {
   /** Creates a new Turntable. */
   static TalonSRX turntableMotor = new TalonSRX(12);
   public void TurntableRun() {
-    turntableMotor.set(ControlMode.PercentOutput, 0.35);
+    turntableMotor.set(ControlMode.PercentOutput, -0.36);
   }
 
   DigitalInput leftIR = new DigitalInput(2);
@@ -53,7 +53,7 @@ public void TurntableSpin(boolean flag) {
         turntableMotor.set(ControlMode.PercentOutput, 0);
       }
       else {
-        turntableMotor.set(ControlMode.PercentOutput, -0.4);
+        turntableMotor.set(ControlMode.PercentOutput, -0.36);
       }
     }
   else{
@@ -62,7 +62,7 @@ public void TurntableSpin(boolean flag) {
 }
 
 public void TurntableRev() {
-    turntableMotor.set(ControlMode.PercentOutput, -0.5);
+    turntableMotor.set(ControlMode.PercentOutput, -0.36);
   }
  public void TurntableReset()
  {
