@@ -17,6 +17,8 @@ import frc.robot.commands.CompressorCommand;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.CompressorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.TurntableSubsystem;
+import frc.robot.commands.TurntableSpin;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -32,7 +34,7 @@ public class RobotContainer {
   Claw clawSubsystem = new Claw();
   Claw clawSpinSubsystem = new Claw();
   CompressorSubsystem compressorSubsystem = new CompressorSubsystem();
-
+  TurntableSubsystem turntableSubsystem = new TurntableSubsystem();
   SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
   public static boolean fieldRelativeDriving = true;
