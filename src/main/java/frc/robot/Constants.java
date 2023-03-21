@@ -94,12 +94,12 @@ public final class Constants {
     public static final class Ports {
       public static final int frontLeftDriveMotor = 1;
       public static final int frontLeftTurnMotor = 2;
-      public static final int frontRightDriveMotor = 7;
-      public static final int frontRightTurnMotor = 8;
+      public static final int frontRightDriveMotor = 5;
+      public static final int frontRightTurnMotor = 6;
       public static final int backLeftDriveMotor = 3;
       public static final int backLeftTurnMotor = 4;
-      public static final int backRightDriveMotor = 5;
-      public static final int backRightTurnMotor = 6;
+      public static final int backRightDriveMotor = 7;
+      public static final int backRightTurnMotor = 8;
 
       public static final int frontLeftCANCoder = 2;
       public static final int frontRightCANCoder = 8;

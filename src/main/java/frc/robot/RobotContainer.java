@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -15,6 +16,8 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.commands.TurntableSpin;
+import frc.robot.subsystems.TurntableSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -28,7 +31,11 @@ public class RobotContainer {
 
   SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
+  TurntableSubsystem turntableSubsystem = new TurntableSubsystem();
+
   public static boolean fieldRelativeDriving = false;
+
+  
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xbox1 =
@@ -38,7 +45,8 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure default command
+    // Configure default commands
+
     swerveSubsystem.setDefaultCommand(
             // The left stick controls translation of the robot.
             // Turning is controlled by the X axis of the right stick.
@@ -54,7 +62,13 @@ public class RobotContainer {
             new ClawOpenClose(
                     clawSubsystem,
                     xbox1.leftBumper(),
-                    xbox1.rightBumper()));      
+                    xbox1.rightBumper())); 
+                    
+    turntableSubsystem.setDefaultCommand(
+            new TurntableSpin(
+                      turntableSubsystem,
+                      xbox1.b()));//,
+                     // xbox1.b()));
   }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the

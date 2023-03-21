@@ -5,29 +5,39 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.button.Button;
-import frc.robot.subsystems.Turntable;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+//import edu.wpi.first.wpilibj2.command.button.Button;
+import frc.robot.subsystems.TurntableSubsystem;
 
 public class TurntableSpin extends CommandBase {
-  /** Creates a new Turntablespin. */
+  /** Creates a new TurntableSpin. */
+  private final TurntableSubsystem m_turntableSubsystem;
+  private Trigger m_b;
+ // private final BButton m_BButton;
 
-  private final Turntable m_turntableSubsystem;
-  private final BButton m_BButton;
-
-  public TurntableSpin(Turntable turntableSubsystem, Button BButton) {
+  public TurntableSpin(TurntableSubsystem turntableSubsystem, Trigger b){//, Button BButton) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_turntableSubsystem = turntableSubsystem;
-    m_BButton = BButton;
+    m_b = b;
+   // m_BButton = BButton;
     addRequirements(turntableSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
-
+  public void initialize() {
+    m_turntableSubsystem.TurntableReset();
+  }
+  
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    // m_turntableSubsystem.TurntableOps();)
+    
+    m_turntableSubsystem.TurntableSpin(m_turntableSubsystem.ToggleTurntable(m_b));
+  }
+
+  
 
   // Called once the command ends or is interrupted.
   @Override

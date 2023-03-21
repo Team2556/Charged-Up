@@ -51,7 +51,7 @@ public class SwerveDrive extends CommandBase {
         double strafe = Math.abs(m_strafeInput.getAsDouble()) > 0.15 ? m_strafeInput.getAsDouble() : 0;
         double rotation = Math.abs(m_rotationInput.getAsDouble()) > 0.15 ? m_rotationInput.getAsDouble() : 0;
         // Forward/Back Throttle, Left/Right Strafe, Left/Right Turn
-        m_swerveDrive.drive(throttle * 0.8, strafe * 0.8, rotation * 0.8, m_isFieldRelative, true);
+        m_swerveDrive.drive(throttle * 0.2, strafe * 0.2, rotation * 0.2, m_isFieldRelative, true);
         gyroReset();
     }
 }
