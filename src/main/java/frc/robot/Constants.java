@@ -11,8 +11,19 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
+  public static int armMotorPort = 13;
+  public static double kArmP = 0.25;
+  public static double kArmI = 0.0;
+  public static double kArmD = 0.0;
+  public static double armEncoderOffset = 140.1;
+
+  public static int extensionMotorPort = 14;
+
+  public static int kTimeoutMs = 30;
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kMechanismControllerPort = 1;
 
     public static final int kDriverYAxis = 1;
     public static final int kDriverXAxis = 0;
@@ -41,7 +52,7 @@ public final class Constants {
     public static final SwerveDriveKinematics kSwerveKinematics =
             new SwerveDriveKinematics(kModuleTranslations);
 
-    public static final double kMaxSpeedMetersPerSecond = Units.feetToMeters(18);
+    public static final double kMaxSpeedMetersPerSecond = Units.feetToMeters(12);
     public static final double kMaxRotationRadiansPerSecond = Math.PI * 2.0;
     public static final double kMaxRotationRadiansPerSecondSquared = Math.PI * 2.0;
 
@@ -94,17 +105,17 @@ public final class Constants {
     public static final class Ports {
       public static final int frontLeftDriveMotor = 1;
       public static final int frontLeftTurnMotor = 2;
-      public static final int frontRightDriveMotor = 5;
-      public static final int frontRightTurnMotor = 6;
       public static final int backLeftDriveMotor = 3;
       public static final int backLeftTurnMotor = 4;
-      public static final int backRightDriveMotor = 7;
-      public static final int backRightTurnMotor = 8;
+      public static final int backRightDriveMotor = 5;
+      public static final int backRightTurnMotor = 6;
+      public static final int frontRightDriveMotor = 7;
+      public static final int frontRightTurnMotor = 8;
 
       public static final int frontLeftCANCoder = 2;
-      public static final int frontRightCANCoder = 8;
       public static final int backLeftCANCoder = 4;
       public static final int backRightCANCoder = 6;
+      public static final int frontRightCANCoder = 8;
     }
   }
 

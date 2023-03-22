@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.CANCoder;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -11,8 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.Swerve.ModulePosition;
-import frc.robot.Constants.Swerve.Ports;
+import frc.robot.Constants.Swerve.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,32 +26,26 @@ public class SwerveSubsystem extends SubsystemBase {
                                     0,
                                     new CANSparkMax(Ports.frontLeftTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     new WPI_TalonFX(Ports.frontLeftDriveMotor),
-                                    new CANCoder(Ports.frontLeftCANCoder),
                                     frontLeftCANCoderOffset),
                             ModulePosition.FRONT_RIGHT,
                             new SwerveModule(
-                                    1,
+                                    3,
                                     new CANSparkMax(Ports.frontRightTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     invertMotor(Ports.frontRightDriveMotor),
-                                    new CANCoder(Ports.frontRightCANCoder),
                                     frontRightCANCoderOffset),
                             ModulePosition.BACK_LEFT,
                             new SwerveModule(
                                     2,
                                     new CANSparkMax(Ports.backLeftTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     new WPI_TalonFX(Ports.backLeftDriveMotor),
-                                    new CANCoder(Ports.backLeftCANCoder),
                                     backLeftCANCoderOffset),
                             ModulePosition.BACK_RIGHT,
                             new SwerveModule(
-                                    3,
+                                    1,
                                     new CANSparkMax(Ports.backRightTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     invertMotor(Ports.backRightDriveMotor),
-                                    new CANCoder(Ports.backRightCANCoder),
                                     backRightCANCoderOffset)));
     private final static AHRS gyro = new AHRS();
-
-    private static boolean hasReset = false;
 
     private final SwerveDriveOdometry m_odometry =
             new SwerveDriveOdometry(
@@ -168,11 +160,11 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void initializeAngle() {
-        if(!hasReset) {
-            for (SwerveModule module : m_swerveModules.values())
-                module.resetAngleToAbsolute();
-            hasReset = true;
-        }
+//        if(!hasReset) {
+//            for (SwerveModule module : m_swerveModules.values())
+//                module.resetAngleToAbsolute();
+//            hasReset = true;
+//        }
     }
 
     @Override

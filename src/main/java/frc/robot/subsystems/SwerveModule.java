@@ -3,9 +3,9 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -31,7 +31,7 @@ public class SwerveModule extends SubsystemBase {
     WPI_TalonFX m_driveMotor;
     private SparkMaxPIDController m_turnController;
     private final RelativeEncoder m_turnEncoder;
-    CANCoder m_angleEncoder;
+    SparkMaxAbsoluteEncoder m_angleEncoder;
     double m_angleOffset;
     double m_currentAngle;
     double m_lastAngle;
@@ -52,14 +52,13 @@ public class SwerveModule extends SubsystemBase {
             int moduleNumber,
             CANSparkMax turnMotor,
             WPI_TalonFX driveMotor,
-            CANCoder angleEncoder,
             double angleOffset) {
         m_moduleNumber = moduleNumber;
         m_turnMotor = turnMotor;
         m_driveMotor = driveMotor;
-        m_angleEncoder = angleEncoder;
-        m_angleOffset = angleOffset;
-        
+        m_angleEncoder = turnMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
+
+//        m_angleOffset = m_angleEncoder.getZeroOffset();
 
         m_driveMotor.configFactoryDefault();
         m_driveMotor.configAllSettings(CtreUtils.generateDriveMotorConfig());
@@ -68,14 +67,13 @@ public class SwerveModule extends SubsystemBase {
         RevUtils.setTurnMotorConfig(m_turnMotor);
         m_turnMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-        m_angleEncoder.configFactoryDefault();
-        m_angleEncoder.configAllSettings(CtreUtils.generateCanCoderConfig());
-
         m_turnEncoder = m_turnMotor.getEncoder();
         m_turnEncoder.setPositionConversionFactor(kTurnRotationsToDegrees);
         m_turnEncoder.setVelocityConversionFactor(kTurnRotationsToDegrees / 60);
 
         m_turnController = m_turnMotor.getPIDController();
+
+        resetAngleToAbsolute();
     }
 
     public int getModuleNumber() {
@@ -83,7 +81,7 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void resetAngleToAbsolute() {
-        double angle = m_angleEncoder.getAbsolutePosition() - m_angleOffset;
+        double angle = (m_angleEncoder.getPosition() * 360.0) - m_angleOffset;
         m_turnEncoder.setPosition(angle);
     }
 
@@ -140,7 +138,7 @@ public class SwerveModule extends SubsystemBase {
         SmartDashboard.putNumber(
                 "module " + m_moduleNumber + " heading", getState().angle.getDegrees());
         SmartDashboard.putNumber(
-                "module " + m_moduleNumber + " CANCoder reading", m_angleEncoder.getAbsolutePosition());
+                "module " + m_moduleNumber + " CANCoder reading", m_angleEncoder.getPosition() * 360.0);
     }
 
     @Override
