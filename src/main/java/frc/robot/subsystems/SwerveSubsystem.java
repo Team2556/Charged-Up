@@ -18,6 +18,7 @@ import java.util.Map;
 import static frc.robot.Constants.Swerve.*;
 
 public class SwerveSubsystem extends SubsystemBase {
+    private final static SwerveSubsystem instance = getInstance();
     private final HashMap<ModulePosition, SwerveModule> m_swerveModules =
             new HashMap<>(
                     Map.of(
@@ -47,6 +48,8 @@ public class SwerveSubsystem extends SubsystemBase {
                                     backRightCANCoderOffset)));
     private final static AHRS gyro = new AHRS();
 
+    private boolean isFieldRelative = false;
+
     private final SwerveDriveOdometry m_odometry =
             new SwerveDriveOdometry(
                     kSwerveKinematics,
@@ -69,7 +72,6 @@ public class SwerveSubsystem extends SubsystemBase {
             double throttle,
             double strafe,
             double rotation,
-            boolean isFieldRelative,
             boolean isOpenLoop) {
 
         throttle *= kMaxSpeedMetersPerSecond;
@@ -155,6 +157,14 @@ public class SwerveSubsystem extends SubsystemBase {
         gyro.reset();
     }
 
+    public void setIsFieldRelative(boolean isFieldRelative) {
+        this.isFieldRelative = isFieldRelative;
+    }
+
+    public boolean getIsFieldRelative() {
+        return isFieldRelative;
+    }
+
     private void updateSmartDashboard() {
         SmartDashboard.putNumber("gyro angle", gyro.getAngle());
         SmartDashboard.putNumber("gyro roll", gyro.getRoll());
@@ -163,17 +173,15 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("robot", getHeadingRotation2d().getDegrees());
     }
 
-    public void initializeAngle() {
-//        if(!hasReset) {
-//            for (SwerveModule module : m_swerveModules.values())
-//                module.resetAngleToAbsolute();
-//            hasReset = true;
-//        }
-    }
-
     @Override
     public void periodic() {
         updateOdometry();
         updateSmartDashboard();
+    }
+
+    public static SwerveSubsystem getInstance() {
+        if(instance == null)
+            return new SwerveSubsystem();
+        return instance;
     }
 }

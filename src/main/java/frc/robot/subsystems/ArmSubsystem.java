@@ -13,16 +13,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Arm extends SubsystemBase {
-    private static final Arm instance = getInstance();
-    private final WPI_TalonFX armMotor = new WPI_TalonFX(Constants.armMotorPort);
-    private final CANSparkMax extension = new CANSparkMax(Constants.extensionMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
-    private final DigitalInput limitSwitch = new DigitalInput(4);
-    public final PIDController pidController = new PIDController(0.0, 0.0, 0.0);
-    public final ArmFeedforward controller = new ArmFeedforward(0.095123, 0.51681 - 0.4, 2.4861 - 0.7, 0.13875);
-    private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(0);
+import static frc.robot.Constants.Ports.*;
+import static frc.robot.Constants.*;
 
-    Arm() {
+public class ArmSubsystem extends SubsystemBase {
+    private static final ArmSubsystem instance = getInstance();
+    private final WPI_TalonFX armMotor = new WPI_TalonFX(armMotorPort);
+    private final CANSparkMax extension = new CANSparkMax(extensionMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
+    private final DigitalInput limitSwitch = new DigitalInput(extensionLimitSwitchPort);
+    public final PIDController pidController = new PIDController(kArmP, kArmI, kArmD);
+    //ToDo Make FF less aggressive
+    public final ArmFeedforward controller = new ArmFeedforward(0.095123, 0.51681 - 0.4, 2.4861 - 0.7, 0.13875);
+    private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(armAbsoluteEncoderPort);
+
+    ArmSubsystem() {
         armMotor.configFactoryDefault();
         armMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
         armMotor.setSensorPhase(false);
@@ -39,21 +43,19 @@ public class Arm extends SubsystemBase {
     }
 
     public void setArmMotor(double pos) {
-        double armPos = pos + Constants.armEncoderOffset;
-        SmartDashboard.putNumber("FF Position", armPos);
-
-        armMotor.setVoltage(pidController.calculate(getEncoderPosition(), armPos) + controller.calculate(Math.toRadians(armPos), 1.0));
+        double armPos = pos + armEncoderOffset;
+        armMotor.setVoltage(pidController.calculate(getArmPosition(), armPos) + controller.calculate(Math.toRadians(armPos), 1.0));
     }
 
     public void setExtensionMotor(double speed) {
-        extension.set(speed);
+        extension.set(!getLimitSwitch() && speed < 0.0 ? 0.0 : speed);
     }
 
-    public double getExtensionMotorEncoder() {
+    public double getExtensionPosition() {
         return extension.getEncoder().getPosition();
     }
 
-    public double getEncoderPosition() {
+    public double getArmPosition() {
         return absoluteEncoder.getAbsolutePosition() * 360.0;
     }
 
@@ -63,12 +65,14 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Arm Encoder", getEncoderPosition());
+        SmartDashboard.putBoolean("Extension Limit Switch", getLimitSwitch());
+        SmartDashboard.putNumber("Extension Encoder", getExtensionPosition());
+        SmartDashboard.putNumber("Arm Encoder", getArmPosition());
     }
 
-    public static Arm getInstance() {
+    public static ArmSubsystem getInstance() {
         if(instance != null)
             return instance;
-        return new Arm();
+        return new ArmSubsystem();
     }
 }

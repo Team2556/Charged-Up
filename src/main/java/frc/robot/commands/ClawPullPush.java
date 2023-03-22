@@ -6,20 +6,18 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.ClawSubsystem;
 
 public class ClawPullPush extends CommandBase {
-  /** Creates a new ClawPullPush. */
-  private Claw m_clawSpinSubsystem;
-  private Trigger m_x;
-  private Trigger m_y;
+  private final ClawSubsystem m_clawSubsystemSpinSubsystem;
+  private final Trigger m_x;
+  private final Trigger m_y;
 
-  public ClawPullPush(Claw clawSpinSubsystem, Trigger x, Trigger y) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    m_clawSpinSubsystem = clawSpinSubsystem;
+  public ClawPullPush(ClawSubsystem clawSubsystemSpinSubsystem, Trigger x, Trigger y) {
+    m_clawSubsystemSpinSubsystem = clawSubsystemSpinSubsystem;
     m_x = x;
     m_y = y;
-    addRequirements(m_clawSpinSubsystem);
+    addRequirements(m_clawSubsystemSpinSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -29,7 +27,7 @@ public class ClawPullPush extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Claw.clawButton(m_x.getAsBoolean(), m_y.getAsBoolean());
+    m_clawSubsystemSpinSubsystem.clawButton(m_x.getAsBoolean(), m_y.getAsBoolean());
   }
 
   // Called once the command ends or is interrupted.

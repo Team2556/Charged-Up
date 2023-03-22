@@ -4,63 +4,54 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticHub;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.Swerve;
-import frc.robot.Constants.Swerve.Ports;
+
+import static frc.robot.Constants.Ports;
 
 public class CompressorSubsystem extends SubsystemBase {
-  /** Creates a new Compressor. */
-  static PneumaticHub m_ph = new PneumaticHub(Swerve.Ports.pneumaticHubCANID); 
+    private final static CompressorSubsystem instance = getInstance();
+    // Creates a new Compressor
+    private final PneumaticHub m_ph = new PneumaticHub(Ports.pneumaticHubCANID);
 
-  public static void SmartDashboardReset() {
-    SmartDashboard.putString("test", "test");
-    SmartDashboard.setDefaultBoolean("Enable Compressor Digital", false);
-    SmartDashboard.setDefaultBoolean("Disable Compressor", false);
-  }
-
-  public static void periodicUpdate() {
-    SmartDashboard.putBoolean("Digital Pressure Switch",
-    m_ph.getPressureSwitch());
-
-    /**
-    * Get compressor running status and display on Shuffleboard.
-    */
-    SmartDashboard.putBoolean("Compressor Running", m_ph.getCompressor());
-
-    // Enable Compressor Digital button
-    if (SmartDashboard.getBoolean("Enable Compressor Digital", false)) {
-    SmartDashboard.putBoolean("Enable Compressor Digital", false);
-
-    /**
-    * Enable the compressor with digital sensor control.
-    *
-    * This will make the compressor run whenever the pressure switch is closed.
-    * If open, (disconnected or reached max pressure), the compressor will shut
-    * off.
-    */
-    m_ph.enableCompressorDigital();
+    public void smartDashboardReset() {
+        SmartDashboard.setDefaultBoolean("Enable Compressor", false);
+        SmartDashboard.setDefaultBoolean("Disable Compressor", false);
     }
 
-    // Disable Compressor button
-    if (SmartDashboard.getBoolean("Disable Compressor", false)) {
-    SmartDashboard.putBoolean("Disable Compressor", false);
+    public void update() {
+        SmartDashboard.putBoolean("Digital Pressure Switch", m_ph.getPressureSwitch());
 
-    /**
-    * Disable the compressor.
-    */
-    m_ph.disableCompressor();
+        // Get compressor running status and display on the dashboard
+        SmartDashboard.putBoolean("Compressor Running", m_ph.getCompressor());
+
+        // Enable Compressor through dashboard
+        if (SmartDashboard.getBoolean("Enable Compressor", false)) {
+            SmartDashboard.putBoolean("Enable Compressor", false);
+
+            /*
+            * Enable the compressor with digital sensor control.
+            *
+            * This will make the compressor run whenever the pressure switch is closed.
+            * If open, (disconnected or reached max pressure), the compressor will shut
+            * off.
+            */
+            m_ph.enableCompressorDigital();
+        }
+
+        // Disable Compressor through dashboard
+        if (SmartDashboard.getBoolean("Disable Compressor", false)) {
+            SmartDashboard.putBoolean("Disable Compressor", false);
+
+            // Disable the compressor
+            m_ph.disableCompressor();
+        }
     }
-  }
-  public CompressorSubsystem() {
-  }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    // periodicUpdate();
-  }
+    public static CompressorSubsystem getInstance() {
+        if(instance == null)
+            return new CompressorSubsystem();
+        return instance;
+    }
 }

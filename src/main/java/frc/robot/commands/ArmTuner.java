@@ -2,21 +2,20 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.ArmSubsystem;
 
 import java.util.function.DoubleSupplier;
 
 public class ArmTuner extends CommandBase {
-    private static final Arm arm = Arm.getInstance();
+    private static final ArmSubsystem m_armSubsystem = ArmSubsystem.getInstance();
     public static double pos = 0.0;
     private final DoubleSupplier extensionStick;
 
     public ArmTuner(DoubleSupplier extensionStick) {
-        addRequirements(arm);
+        addRequirements(m_armSubsystem);
         SmartDashboard.putNumber("Arm P", 0.0);
         SmartDashboard.putNumber("Arm I", 0.0);
         SmartDashboard.putNumber("Arm D", 0.0);
-        SmartDashboard.putNumber("Arm F", 0.0);
         SmartDashboard.putNumber("Arm Position", pos);
 
         this.extensionStick = extensionStick;
@@ -36,21 +35,14 @@ public class ArmTuner extends CommandBase {
             p = kP;
             i = kI;
             d = kD;
-            arm.pidController.setP(p);
-            arm.pidController.setI(i);
-            arm.pidController.setD(d);
+            m_armSubsystem.pidController.setP(p);
+            m_armSubsystem.pidController.setI(i);
+            m_armSubsystem.pidController.setD(d);
         }
 
-        if(extensionStick.getAsDouble() > 0.5)
-            arm.setExtensionMotor(extensionStick.getAsDouble() * 0.8);
-        else if(extensionStick.getAsDouble() < -0.5 && arm.getLimitSwitch())
-            arm.setExtensionMotor(extensionStick.getAsDouble() * 0.8);
-        else
-            arm.setExtensionMotor(0.0);
+        m_armSubsystem.setExtensionMotor(Math.abs(extensionStick.getAsDouble()) > 0.3 ?
+                extensionStick.getAsDouble() * -1.0 * 0.8 : 0.0);
 
-        arm.setArmMotor(pos);
-        SmartDashboard.putBoolean("Extension Limit Switch", arm.getLimitSwitch());
-        SmartDashboard.putNumber("Extension Encoder", arm.getExtensionMotorEncoder());
-        SmartDashboard.putNumber("Arm Encoder", arm.getEncoderPosition());
+        m_armSubsystem.setArmMotor(pos);
     }
 }
