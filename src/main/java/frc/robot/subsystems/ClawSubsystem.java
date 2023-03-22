@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.Ports.*;
 
 public class ClawSubsystem extends SubsystemBase {
+    private final static ClawSubsystem instance = getInstance();
     private final DoubleSolenoid grabSolenoid = new DoubleSolenoid(
           pneumaticHubCANID, PneumaticsModuleType.REVPH, grabSolenoidForward, grabSolenoidReverse);
     private final CANSparkMax clawSpin = new CANSparkMax(clawNeoPort, MotorType.kBrushless);
@@ -60,5 +61,11 @@ public class ClawSubsystem extends SubsystemBase {
         } else {
             clawStop();
         }
+    }
+
+    public static ClawSubsystem getInstance() {
+        if(instance == null)
+            return new ClawSubsystem();
+        return instance;
     }
 }

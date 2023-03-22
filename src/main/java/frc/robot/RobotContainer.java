@@ -20,8 +20,7 @@ import frc.robot.subsystems.*;
  */
 public class RobotContainer {
 
-    private final ClawSubsystem       clawSubsystem               = new ClawSubsystem();
-    private final ClawSubsystem       clawSubsystemSpinSubsystem  = new ClawSubsystem();
+    private final ClawSubsystem       clawSubsystem               = ClawSubsystem.getInstance();
     private final CompressorSubsystem compressorSubsystem         = CompressorSubsystem.getInstance();
     private final TurntableSubsystem  turntableSubsystem          = TurntableSubsystem.getInstance();
     private final SwerveSubsystem     swerveSubsystem             = SwerveSubsystem.getInstance();
@@ -59,15 +58,9 @@ public class RobotContainer {
         );
 
         clawSubsystem.setDefaultCommand(
-            new ClawOpenClose(
-                    clawSubsystem,
+            new ClawControl(
                     xbox2.leftTrigger(),
-                    xbox2.rightTrigger())
-        );
-
-        clawSubsystemSpinSubsystem.setDefaultCommand(
-            new ClawPullPush(
-                    clawSubsystemSpinSubsystem,
+                    xbox2.rightTrigger(),
                     xbox2.leftBumper(),
                     xbox2.rightBumper())
         );
