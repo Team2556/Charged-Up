@@ -19,6 +19,7 @@ import frc.robot.commands.PhotonCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.SwerveDrive;
+import frc.robot.subsystems.Photon;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /**
@@ -63,11 +64,6 @@ public class RobotContainer {
                 SmartDashboard.putNumber("targetID", targetID);
                 System.out.println(targetID);
                 System.out.println("Hi");
-     photonSubsystem.setDefaultCommand(
-        new PhotonCommand(null, xbox1::a);
-        
-     );            
-            
 
     swerveSubsystem.setDefaultCommand(
             // The left stick controls translation of the robot.
@@ -78,7 +74,11 @@ public class RobotContainer {
                     xbox1::getLeftX,
                     xbox1::getRightX,
                     fieldRelativeDriving));
-
+    photonSubsystem.setDefaultCommand(
+      new PhotonCommand(
+        photonSubsystem,
+        xbox1.y())
+    );
             
     // Configure the trigger bindings
     //configureBindings(

@@ -22,9 +22,6 @@ public class PhotonCommand extends CommandBase {
     m_x = x;
   }
 
-  public PhotonCommand(Object photonSubsystem, Object x) {
-  }
-
 // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
