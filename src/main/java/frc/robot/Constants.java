@@ -111,6 +111,10 @@ public final class Constants {
       public static final int backRightTurnMotor = 6;
       public static final int frontRightDriveMotor = 7;
       public static final int frontRightTurnMotor = 8;
+     
+      public static final int pneumaticHubCANID = 9;
+
+      public static final int clawNeo = 15;
 
       public static final int frontLeftCANCoder = 2;
       public static final int backLeftCANCoder = 4;
@@ -124,4 +128,7 @@ public final class Constants {
     OPENLOOP,
     CLOSEDLOOP
   }
+
+public static double kTurnToAngleP;
+public static double kTurnToAngleTolerance;
 }

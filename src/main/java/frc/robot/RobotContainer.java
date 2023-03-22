@@ -4,16 +4,27 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ArmTuner;
 import frc.robot.commands.IntakeControl;
+import frc.robot.commands.ClawOpenClose;
+import frc.robot.commands.ClawPullPush;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
+import frc.robot.commands.CompressorCommand;
+import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.CompressorSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.TurntableSubsystem;
+import frc.robot.commands.TurntableSpin;
+import frc.robot.commands.SwerveDrive;
+import frc.robot.subsystems.SwerveSubsystem;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,6 +34,10 @@ import frc.robot.subsystems.SwerveSubsystem;
  */
 public class RobotContainer {
 
+  Claw clawSubsystem = new Claw();
+  Claw clawSpinSubsystem = new Claw();
+  CompressorSubsystem compressorSubsystem = new CompressorSubsystem();
+  TurntableSubsystem turntableSubsystem = new TurntableSubsystem();
   SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final Arm armSubsystem = Arm.getInstance();
   private final Intake intakeSubsystem = Intake.getInstance();
@@ -60,8 +75,24 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+    clawSubsystem.setDefaultCommand(
+            new ClawOpenClose(
+                    clawSubsystem,
+                    xbox1.leftBumper(),
+                    xbox1.rightBumper()));
+    clawSpinSubsystem.setDefaultCommand(
+            new ClawPullPush(
+                    clawSpinSubsystem,
+                    xbox1.x(),
+                    xbox1.y())); 
+     compressorSubsystem.setDefaultCommand(
+            new CompressorCommand(
+                    compressorSubsystem));
+    turntableSubsystem.setDefaultCommand(
+            new TurntableSpin(
+                      turntableSubsystem,
+                      xbox1.b()));//,
   }
-
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary

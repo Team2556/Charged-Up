@@ -156,7 +156,11 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     private void updateSmartDashboard() {
-        SmartDashboard.putNumber("gyro", gyro.getAngle());
+        SmartDashboard.putNumber("gyro angle", gyro.getAngle());
+        SmartDashboard.putNumber("gyro roll", gyro.getRoll());
+        SmartDashboard.putNumber("gyro pitch", gyro.getPitch());
+        SmartDashboard.putNumber("gyro yaw", gyro.getYaw());
+        SmartDashboard.putNumber("robot", getHeadingRotation2d().getDegrees());
     }
 
     public void initializeAngle() {
