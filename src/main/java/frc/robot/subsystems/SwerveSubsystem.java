@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Swerve.*;
 
@@ -91,10 +93,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
         SwerveModuleState[] moduleStates = kSwerveKinematics.toSwerveModuleStates(chassisSpeeds);
 
-        SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, kMaxSpeedMetersPerSecond);
+        setModuleStates(moduleStates);
+    }
 
+    public void setModuleStates(SwerveModuleState[] desiredStates) {
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, kMaxSpeedMetersPerSecond);
         for (SwerveModule module : m_swerveModules.values())
-            module.setDesiredState(moduleStates[module.getModuleNumber()], isOpenLoop);
+            module.setDesiredState(desiredStates[module.getModuleNumber()], true);
     }
 
     public void setSwerveModuleStates(SwerveModuleState[] states, boolean isOpenLoop) {
@@ -172,16 +177,37 @@ public class SwerveSubsystem extends SubsystemBase {
 
     private void updateSmartDashboard() {
         SmartDashboard.putNumber("gyro angle", gyro.getAngle());
-        SmartDashboard.putNumber("gyro roll", gyro.getRoll());
-        SmartDashboard.putNumber("gyro pitch", gyro.getPitch());
-        SmartDashboard.putNumber("gyro yaw", gyro.getYaw());
-        SmartDashboard.putNumber("robot", getHeadingRotation2d().getDegrees());
+        SmartDashboard.putNumber("robot x", m_odometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("robot y", m_odometry.getPoseMeters().getY());
+        SmartDashboard.putNumber("robot rotation", m_odometry.getPoseMeters().getRotation().getDegrees());
     }
 
     @Override
     public void periodic() {
         updateOdometry();
         updateSmartDashboard();
+    }
+
+    public void setX() {
+        m_swerveModules.get(ModulePosition.FRONT_LEFT).setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), true);
+        m_swerveModules.get(ModulePosition.FRONT_RIGHT).setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), true);
+        m_swerveModules.get(ModulePosition.BACK_LEFT).setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), true);
+        m_swerveModules.get(ModulePosition.BACK_RIGHT).setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), true);
+    }
+
+    public CommandBase autoBalance() {
+        return Commands.race(
+                Commands.sequence(
+                        Commands.run(
+                                ()->this.drive(2/kMaxSpeedMetersPerSecond,
+                                        0,0,true),this).until(()->Math.abs(gyro.getPitch())>=14.3),
+                        Commands.run(
+                                ()->this.drive(0.3/kMaxSpeedMetersPerSecond,
+                                        0,0,true),this).until(()->Math.abs(gyro.getPitch())<=12.5),
+                        Commands.run(this::setX,this)),
+                Commands.waitSeconds(15));
+        // Commands.run(
+        //   ()->this.drive(0,0,0,true,true),this));
     }
 
     public static SwerveSubsystem getInstance() {
