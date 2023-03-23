@@ -89,7 +89,6 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putString("Arm Pos", getArmPosition().name());
         SmartDashboard.putString("Extension Pos", getExtensionPosition().name());
         SmartDashboard.putString("Arm Game Piece", getCones() ? "Cones" : "Cubes");
-        setCones(SmartDashboard.getBoolean("Arm Cones", true));
     }
 
     public void setCones(boolean cones) {

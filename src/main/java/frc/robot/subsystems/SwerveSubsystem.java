@@ -50,7 +50,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                     backRightCANCoderOffset)));
     private final AHRS gyro = new AHRS();
 
-    private boolean isFieldRelative = false;
+    private boolean isFieldRelative = true;
 
     private final SwerveDriveOdometry m_odometry =
             new SwerveDriveOdometry(

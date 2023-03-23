@@ -11,6 +11,8 @@ public class SwerveDrive extends CommandBase {
     private final SwerveSubsystem m_swerveDrive;
     private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
     private final Trigger m_gyroReset;
+    private static boolean precisionMode = false;
+    private double regularScalar = 0.7, precisionScalar = 0.2;
 
     /**
      * Creates a new ExampleCommand.
@@ -41,7 +43,17 @@ public class SwerveDrive extends CommandBase {
         double strafe = Math.abs(m_strafeInput.getAsDouble()) > 0.15 ? m_strafeInput.getAsDouble() : 0;
         double rotation = Math.abs(m_rotationInput.getAsDouble()) > 0.15 ? m_rotationInput.getAsDouble() : 0;
         // Forward/Back Throttle, Left/Right Strafe, Left/Right Turn
-        m_swerveDrive.drive(throttle * 0.2, strafe * 0.2, rotation * 0.2, true);
+        m_swerveDrive.drive(throttle * (getPrecisionMode() ? precisionScalar : regularScalar),
+                strafe * (getPrecisionMode() ? precisionScalar : regularScalar),
+                rotation * (getPrecisionMode() ? precisionScalar : regularScalar), true);
         gyroReset();
+    }
+
+    public static void setPrecisionMode(boolean precisionMode) {
+        SwerveDrive.precisionMode = precisionMode;
+    }
+
+    public static boolean getPrecisionMode() {
+        return precisionMode;
     }
 }

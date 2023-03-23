@@ -116,8 +116,10 @@ public class RobotContainer {
     private void configureBindings() {
         //ToDo Do this in a better way
         xbox1.start().onTrue(new InstantCommand(() -> swerveSubsystem.setIsFieldRelative(!swerveSubsystem.getIsFieldRelative())));
+        xbox2.start().onTrue(new InstantCommand(() -> SwerveDrive.setPrecisionMode(!SwerveDrive.getPrecisionMode())));
         xbox2.a().onTrue(new InstantCommand(() -> turntableSubsystem.setManualToggle(!turntableSubsystem.getManualToggle())));
         xbox2.y().onTrue(new InstantCommand(() -> armSubsystem.setCones(!armSubsystem.getCones())));
+        xbox2.x().onTrue(new InstantCommand(() -> ArmControl.setArmState(ArmControl.ArmState.AUTO_PICKUP)));
     }
 
     /**

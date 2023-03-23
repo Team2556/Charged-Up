@@ -56,9 +56,8 @@ public final class Constants {
 
     public enum ExtensionPosition {
         RESET(0.0),
-        GRAB_CONE(0.0),
-        GRAB_CUBE(0.0),
-        EXTEND(0.0),
+        GRAB(105.0),
+        EXTEND(120.0),
         RETRACT(0.0);
 
         private final double position;

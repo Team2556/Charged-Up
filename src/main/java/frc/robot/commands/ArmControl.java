@@ -14,10 +14,10 @@ public class ArmControl extends CommandBase {
     private final Timer timer = new Timer();
     private final DoubleSupplier armStick, extensionStick;
 
-    private ArmState armState = ArmState.MANUAL;
+    private static ArmState armState = ArmState.MANUAL;
     private boolean firstAutoLoop = true;
 
-    enum ArmState {
+    public enum ArmState {
         MANUAL,
         AUTO_PICKUP
     }
@@ -43,7 +43,7 @@ public class ArmControl extends CommandBase {
                             extensionStick.getAsDouble() * -1.0 * 0.8 : 0.0);
                 else {
                     if (m_armSubsystem.getLimitSwitch())
-                        m_armSubsystem.setExtensionMotor(-0.1);
+                        m_armSubsystem.setExtensionMotor(-0.25);
                     else {
                         m_armSubsystem.resetExtensionMotor();
                         m_armSubsystem.setExtensionPosition(Constants.ExtensionPosition.RETRACT);
@@ -105,16 +105,23 @@ public class ArmControl extends CommandBase {
 
                 if(firstAutoLoop) {
                     m_clawSubsystem.clawOpenAction();
-                    m_armSubsystem.setExtensionPosition(m_armSubsystem.getCones() ? Constants.ExtensionPosition.GRAB_CONE : Constants.ExtensionPosition.GRAB_CUBE);
+                    m_armSubsystem.setExtensionPosition(Constants.ExtensionPosition.GRAB);
                     firstAutoLoop = false;
                 }
+
+                if(almostEqual(m_armSubsystem.getExtensionPosition().getPosition(), m_armSubsystem.getExtensionEncoderPosition(), 3)) {
+                    if(m_armSubsystem.getCones())
+                        m_clawSubsystem.clawCloseAction();
+                    m_armSubsystem.setExtensionPosition(Constants.ExtensionPosition.RETRACT);
+                }
+
                 m_clawSubsystem.clawPullAction();
                 m_armSubsystem.setExtensionPositionPID(m_armSubsystem.getExtensionPosition().getPosition());
-
-                if(almostEqual(m_armSubsystem.getExtensionPosition().getPosition(), m_armSubsystem.getExtensionEncoderPosition(), 100)) {
-                    m_clawSubsystem.clawCloseAction();
-                }
         }
+    }
+
+    public static void setArmState(ArmState armState) {
+        ArmControl.armState = armState;
     }
 
     private boolean almostEqual(double a, double b, double eps){

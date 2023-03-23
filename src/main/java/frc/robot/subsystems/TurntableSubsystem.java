@@ -33,7 +33,7 @@ public class TurntableSubsystem extends SubsystemBase {
 
     public void turntableSpin() {
         if((rightIR.get() || leftIR.get()) && manualToggle)
-            turntableMotor.set(ControlMode.PercentOutput, 0.3);
+            turntableMotor.set(ControlMode.PercentOutput, 0.36);
         else
             turntableMotor.set(ControlMode.PercentOutput, 0);
     }
