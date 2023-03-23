@@ -4,13 +4,21 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+
+import java.util.Map;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -32,8 +40,20 @@ public class RobotContainer {
     private final CommandXboxController xbox2 =
             new CommandXboxController(Constants.OperatorConstants.kMechanismControllerPort);
 
+    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+    private GenericEntry kAutoStartDelaySeconds;
+
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+        // Autonomous selector options
+        kAutoStartDelaySeconds = Shuffleboard.getTab("Live")
+                .add("Auto Delay", 0)
+                .withWidget(BuiltInWidgets.kNumberSlider)
+                .withProperties((Map.of("Min", 0, "Max", 10, "Block increment", 1)))
+                .getEntry();
+        autoChooser.setDefaultOption("Nothing", Commands.waitSeconds(5));
+        autoChooser.addOption("Auto Balance", swerveSubsystem.autoBalance());
+        SmartDashboard.putData("Auto Chooser",autoChooser);
         // Configure default commands
         swerveSubsystem.setDefaultCommand(
             // The left stick controls translation of the robot.
@@ -49,7 +69,9 @@ public class RobotContainer {
         intakeSubsystem.setDefaultCommand(
             new IntakeControl(
                     xbox1::getRightTriggerAxis,
-                    xbox1::getLeftTriggerAxis)
+                    xbox1::getLeftTriggerAxis,
+                    xbox1.rightBumper(),
+                    xbox1.leftBumper())
         );
 
         armSubsystem.setDefaultCommand(
@@ -104,6 +126,8 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new WaitCommand(0);
+        return Commands.sequence(
+                Commands.waitSeconds(kAutoStartDelaySeconds.getDouble(0)),
+                autoChooser.getSelected());
     }
 }

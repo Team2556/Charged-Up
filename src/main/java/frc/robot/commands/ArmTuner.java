@@ -35,9 +35,9 @@ public class ArmTuner extends CommandBase {
             p = kP;
             i = kI;
             d = kD;
-            m_armSubsystem.pidController.setP(p);
-            m_armSubsystem.pidController.setI(i);
-            m_armSubsystem.pidController.setD(d);
+            m_armSubsystem.armPIDController.setP(p);
+            m_armSubsystem.armPIDController.setI(i);
+            m_armSubsystem.armPIDController.setD(d);
         }
 
         m_armSubsystem.setExtensionMotor(Math.abs(extensionStick.getAsDouble()) > 0.3 ?

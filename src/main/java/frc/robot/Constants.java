@@ -32,8 +32,9 @@ public final class Constants {
     public static double kArmD = 0.0;
 
     public enum ArmPosition {
-        START(-108.0),
-        INTAKE(-108.0),
+        START(-109.0),
+        GRAB(-109.0),
+        INTAKE(-90.0),
         CONE_LOW(-75.0),
         CONE_MEDIUM(-20.0),
         CONE_HIGH(5.0),
@@ -55,7 +56,8 @@ public final class Constants {
 
     public enum ExtensionPosition {
         RESET(0.0),
-        INTAKE(0.0),
+        GRAB_CONE(0.0),
+        GRAB_CUBE(0.0),
         EXTEND(0.0),
         RETRACT(0.0);
 

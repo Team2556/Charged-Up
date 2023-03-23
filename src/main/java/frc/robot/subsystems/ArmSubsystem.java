@@ -5,13 +5,17 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+
+import java.util.function.Supplier;
 
 import static frc.robot.Constants.Ports.*;
 import static frc.robot.Constants.*;
@@ -21,14 +25,15 @@ public class ArmSubsystem extends SubsystemBase {
     private final WPI_TalonFX armMotor = new WPI_TalonFX(armMotorPort);
     private final CANSparkMax extension = new CANSparkMax(extensionMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
     private final DigitalInput limitSwitch = new DigitalInput(extensionLimitSwitchPort);
-    public final PIDController pidController = new PIDController(kArmP, kArmI, kArmD);
+    public final PIDController armPIDController = new PIDController(kArmP, kArmI, kArmD);
     //ToDo Make FF less aggressive
-    public final ArmFeedforward controller = new ArmFeedforward(0.095123, 0.51681 - 0.4, 2.4861 - 0.7, 0.13875);
+    public final ArmFeedforward armFFController = new ArmFeedforward(0.095123, 0.51681 - 0.4, 2.4861 - 0.7, 0.13875);
+    private final SparkMaxPIDController extensionPIDController;
     private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(armAbsoluteEncoderPort);
-    private Constants.ArmPosition armPosition = Constants.ArmPosition.INTAKE;
+    private Constants.ArmPosition armPosition = Constants.ArmPosition.GRAB;
     private Constants.ExtensionPosition extensionPosition = Constants.ExtensionPosition.RESET;
     // Toggle for Cone or Cube positions
-    private boolean cones = false;
+    private boolean cones = true;
 
     ArmSubsystem() {
         armMotor.configFactoryDefault();
@@ -44,11 +49,16 @@ public class ArmSubsystem extends SubsystemBase {
 
         extension.restoreFactoryDefaults();
         extension.setInverted(true);
+
+        extensionPIDController = extension.getPIDController();
+        extensionPIDController.setP(0.02);
+        extensionPIDController.setI(0.0);
+        extensionPIDController.setD(0.0);
     }
 
     public void setArmMotor(double pos) {
         double armPos = pos + armEncoderOffset;
-        armMotor.setVoltage(pidController.calculate(getArmEncoderPosition(), armPos) + controller.calculate(Math.toRadians(armPos), 1.0));
+        armMotor.setVoltage(armPIDController.calculate(getArmEncoderPosition(), armPos) + armFFController.calculate(Math.toRadians(armPos), 1.0));
     }
 
     public void setExtensionMotor(double speed) {
@@ -78,6 +88,8 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Arm Encoder", getArmEncoderPosition());
         SmartDashboard.putString("Arm Pos", getArmPosition().name());
         SmartDashboard.putString("Extension Pos", getExtensionPosition().name());
+        SmartDashboard.putString("Arm Game Piece", getCones() ? "Cones" : "Cubes");
+        setCones(SmartDashboard.getBoolean("Arm Cones", true));
     }
 
     public void setCones(boolean cones) {
@@ -98,6 +110,10 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void setExtensionPosition(ExtensionPosition extensionPosition) {
         this.extensionPosition = extensionPosition;
+    }
+
+    public void setExtensionPositionPID(double setpoint) {
+        extensionPIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0);
     }
 
     public ExtensionPosition getExtensionPosition() {
