@@ -53,9 +53,15 @@ public class RobotContainer {
         );
 
         armSubsystem.setDefaultCommand(
-                new ArmTuner(
-                        xbox2::getLeftY)
+                new ArmControl(
+                        xbox2::getLeftY,
+                        xbox2::getRightY)
         );
+
+//        armSubsystem.setDefaultCommand(
+//                new ArmTuner(
+//                        xbox2::getLeftY)
+//        );
 
         clawSubsystem.setDefaultCommand(
             new ClawControl(
@@ -89,6 +95,7 @@ public class RobotContainer {
         //ToDo Do this in a better way
         xbox1.start().onTrue(new InstantCommand(() -> swerveSubsystem.setIsFieldRelative(!swerveSubsystem.getIsFieldRelative())));
         xbox2.a().onTrue(new InstantCommand(() -> turntableSubsystem.setManualToggle(!turntableSubsystem.getManualToggle())));
+        xbox2.y().onTrue(new InstantCommand(() -> armSubsystem.setCones(!armSubsystem.getCones())));
     }
 
     /**

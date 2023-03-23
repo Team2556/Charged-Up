@@ -8,7 +8,7 @@ import java.util.function.DoubleSupplier;
 
 public class ArmTuner extends CommandBase {
     private static final ArmSubsystem m_armSubsystem = ArmSubsystem.getInstance();
-    public static double pos = 0.0;
+    public static double pos = -108.0;
     private final DoubleSupplier extensionStick;
 
     public ArmTuner(DoubleSupplier extensionStick) {

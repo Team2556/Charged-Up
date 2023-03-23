@@ -46,7 +46,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                     new CANSparkMax(Ports.backRightTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     invertMotor(Ports.backRightDriveMotor),
                                     backRightCANCoderOffset)));
-    private final static AHRS gyro = new AHRS();
+    private final AHRS gyro = new AHRS();
 
     private boolean isFieldRelative = false;
 
@@ -65,7 +65,12 @@ public class SwerveSubsystem extends SubsystemBase {
             new ProfiledPIDController(kP_Theta, 0, kD_Theta, kThetaControllerConstraints);
 
     public SwerveSubsystem() {
-       gyro.reset();
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+                gyro.reset();
+            } catch (InterruptedException ignore) {}
+        }).start();
     }
 
     public void drive(
@@ -153,7 +158,7 @@ public class SwerveSubsystem extends SubsystemBase {
         return talonFX;
     }
 
-    public static void gyroZero() {
+    public void gyroZero() {
         gyro.reset();
     }
 

@@ -25,6 +25,10 @@ public class ArmSubsystem extends SubsystemBase {
     //ToDo Make FF less aggressive
     public final ArmFeedforward controller = new ArmFeedforward(0.095123, 0.51681 - 0.4, 2.4861 - 0.7, 0.13875);
     private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(armAbsoluteEncoderPort);
+    private Constants.ArmPosition armPosition = Constants.ArmPosition.INTAKE;
+    private Constants.ExtensionPosition extensionPosition = Constants.ExtensionPosition.RESET;
+    // Toggle for Cone or Cube positions
+    private boolean cones = false;
 
     ArmSubsystem() {
         armMotor.configFactoryDefault();
@@ -44,18 +48,22 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void setArmMotor(double pos) {
         double armPos = pos + armEncoderOffset;
-        armMotor.setVoltage(pidController.calculate(getArmPosition(), armPos) + controller.calculate(Math.toRadians(armPos), 1.0));
+        armMotor.setVoltage(pidController.calculate(getArmEncoderPosition(), armPos) + controller.calculate(Math.toRadians(armPos), 1.0));
     }
 
     public void setExtensionMotor(double speed) {
         extension.set(!getLimitSwitch() && speed < 0.0 ? 0.0 : speed);
     }
 
-    public double getExtensionPosition() {
+    public double getExtensionEncoderPosition() {
         return extension.getEncoder().getPosition();
     }
 
-    public double getArmPosition() {
+    public void resetExtensionMotor() {
+        extension.getEncoder().setPosition(0.0);
+    }
+
+    public double getArmEncoderPosition() {
         return absoluteEncoder.getAbsolutePosition() * 360.0;
     }
 
@@ -66,8 +74,34 @@ public class ArmSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Extension Limit Switch", getLimitSwitch());
-        SmartDashboard.putNumber("Extension Encoder", getExtensionPosition());
-        SmartDashboard.putNumber("Arm Encoder", getArmPosition());
+        SmartDashboard.putNumber("Extension Encoder", getExtensionEncoderPosition());
+        SmartDashboard.putNumber("Arm Encoder", getArmEncoderPosition());
+        SmartDashboard.putString("Arm Pos", getArmPosition().name());
+        SmartDashboard.putString("Extension Pos", getExtensionPosition().name());
+    }
+
+    public void setCones(boolean cones) {
+        this.cones = cones;
+    }
+
+    public boolean getCones() {
+        return cones;
+    }
+
+    public void setArmPosition(ArmPosition armPosition) {
+        this.armPosition = armPosition;
+    }
+
+    public ArmPosition getArmPosition() {
+        return armPosition;
+    }
+
+    public void setExtensionPosition(ExtensionPosition extensionPosition) {
+        this.extensionPosition = extensionPosition;
+    }
+
+    public ExtensionPosition getExtensionPosition() {
+        return extensionPosition;
     }
 
     public static ArmSubsystem getInstance() {

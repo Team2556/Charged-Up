@@ -30,7 +30,7 @@ public class SwerveDrive extends CommandBase {
 
     public void gyroReset() {
         if (m_gyroReset.getAsBoolean()) {
-            SwerveSubsystem.gyroZero();
+            m_swerveDrive.gyroZero();
         }
     }
 

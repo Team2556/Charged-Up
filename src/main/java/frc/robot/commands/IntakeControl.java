@@ -17,12 +17,21 @@ public class IntakeControl extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        intakeSubsystem.intakeOff();
+    }
+
+    @Override
     public void execute() {
-        if(rightTrigger.getAsDouble() > 0.5)
+        if(rightTrigger.getAsDouble() > 0.5) {
             intakeSubsystem.setIntakeMotor(rightTrigger.getAsDouble() * 0.4);
-        else if(leftTrigger.getAsDouble() > 0.5)
+            intakeSubsystem.intakeExtend();
+        } else if(leftTrigger.getAsDouble() > 0.5) {
             intakeSubsystem.setIntakeMotor(leftTrigger.getAsDouble() * -0.4);
-        else
+            intakeSubsystem.intakeExtend();
+        } else {
             intakeSubsystem.setIntakeMotor(0.0);
+            intakeSubsystem.intakeRetract();
+        }
     }
 }

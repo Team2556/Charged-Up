@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -31,8 +32,8 @@ public class TurntableSubsystem extends SubsystemBase {
     }
 
     public void turntableSpin() {
-        if((rightIR.get() && leftIR.get()) || manualToggle)
-            turntableMotor.set(ControlMode.PercentOutput, 0.36);
+        if((rightIR.get() || leftIR.get()) && manualToggle)
+            turntableMotor.set(ControlMode.PercentOutput, 0.3);
         else
             turntableMotor.set(ControlMode.PercentOutput, 0);
     }
@@ -51,6 +52,12 @@ public class TurntableSubsystem extends SubsystemBase {
 
     public boolean getManualToggle() {
         return manualToggle;
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putBoolean("Right IR", rightIR.get());
+        SmartDashboard.putBoolean("Left IR", leftIR.get());
     }
 
     public static TurntableSubsystem getInstance() {

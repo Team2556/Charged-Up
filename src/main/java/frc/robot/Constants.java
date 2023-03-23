@@ -14,6 +14,8 @@ public final class Constants {
 
     public static class Ports {
         public static final int pneumaticHubCANID = 9;
+        public static final int intakeSolenoidForward = 4;
+        public static final int intakeSolenoidReverse = 5;
         public static final int grabSolenoidForward = 6;
         public static final int grabSolenoidReverse = 7;
         public static final int intakeMotorPort = 10;
@@ -29,25 +31,29 @@ public final class Constants {
     public static double kArmI = 0.0;
     public static double kArmD = 0.0;
 
-    public enum ArmPositions {
+    public enum ArmPosition {
         START(-108.0),
         INTAKE(-108.0),
-        CONE_LOW(0.0),
-        CONE_MEDIUM(0.0),
-        CONE_HIGH(0.0),
-        CUBE_LOW(0.0),
-        CUBE_MEDIUM(0.0),
+        CONE_LOW(-75.0),
+        CONE_MEDIUM(-20.0),
+        CONE_HIGH(5.0),
+        CUBE_LOW(-75.0),
+        CUBE_MEDIUM(-25.0),
         CUBE_HIGH(0.0),
         SLIDE_GRAB(0.0);
 
         private final double position;
 
-        ArmPositions(double position) {
+        ArmPosition(double position) {
           this.position = position;
+        }
+
+        public double getPosition() {
+            return position;
         }
     }
 
-    public enum ExtensionPositions {
+    public enum ExtensionPosition {
         RESET(0.0),
         INTAKE(0.0),
         EXTEND(0.0),
@@ -55,7 +61,7 @@ public final class Constants {
 
         private final double position;
 
-        ExtensionPositions(double position) {
+        ExtensionPosition(double position) {
             this.position = position;
         }
 
