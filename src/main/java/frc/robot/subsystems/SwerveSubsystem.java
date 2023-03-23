@@ -18,6 +18,7 @@ import java.util.Map;
 import static frc.robot.Constants.Swerve.*;
 
 public class SwerveSubsystem extends SubsystemBase {
+    private final static SwerveSubsystem instance = getInstance();
     private final HashMap<ModulePosition, SwerveModule> m_swerveModules =
             new HashMap<>(
                     Map.of(
@@ -45,7 +46,9 @@ public class SwerveSubsystem extends SubsystemBase {
                                     new CANSparkMax(Ports.backRightTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     invertMotor(Ports.backRightDriveMotor),
                                     backRightCANCoderOffset)));
-    private final static AHRS gyro = new AHRS();
+    private final AHRS gyro = new AHRS();
+
+    private boolean isFieldRelative = false;
 
     private final SwerveDriveOdometry m_odometry =
             new SwerveDriveOdometry(
@@ -62,14 +65,18 @@ public class SwerveSubsystem extends SubsystemBase {
             new ProfiledPIDController(kP_Theta, 0, kD_Theta, kThetaControllerConstraints);
 
     public SwerveSubsystem() {
-       gyro.reset();
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+                gyro.reset();
+            } catch (InterruptedException ignore) {}
+        }).start();
     }
 
     public void drive(
             double throttle,
             double strafe,
             double rotation,
-            boolean isFieldRelative,
             boolean isOpenLoop) {
 
         throttle *= kMaxSpeedMetersPerSecond;
@@ -151,8 +158,16 @@ public class SwerveSubsystem extends SubsystemBase {
         return talonFX;
     }
 
-    public static void gyroZero() {
+    public void gyroZero() {
         gyro.reset();
+    }
+
+    public void setIsFieldRelative(boolean isFieldRelative) {
+        this.isFieldRelative = isFieldRelative;
+    }
+
+    public boolean getIsFieldRelative() {
+        return isFieldRelative;
     }
 
     private void updateSmartDashboard() {
@@ -163,17 +178,15 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("robot", getHeadingRotation2d().getDegrees());
     }
 
-    public void initializeAngle() {
-//        if(!hasReset) {
-//            for (SwerveModule module : m_swerveModules.values())
-//                module.resetAngleToAbsolute();
-//            hasReset = true;
-//        }
-    }
-
     @Override
     public void periodic() {
         updateOdometry();
         updateSmartDashboard();
+    }
+
+    public static SwerveSubsystem getInstance() {
+        if(instance == null)
+            return new SwerveSubsystem();
+        return instance;
     }
 }

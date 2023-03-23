@@ -11,26 +11,72 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
-  public static int armMotorPort = 13;
-  public static double kArmP = 0.25;
-  public static double kArmI = 0.0;
-  public static double kArmD = 0.0;
-  public static double armEncoderOffset = 140.1;
 
-  public static int extensionMotorPort = 14;
+    public static class Ports {
+        public static final int pneumaticHubCANID = 9;
+        public static final int intakeSolenoidForward = 4;
+        public static final int intakeSolenoidReverse = 5;
+        public static final int grabSolenoidForward = 6;
+        public static final int grabSolenoidReverse = 7;
+        public static final int intakeMotorPort = 10;
+        public static final int armMotorPort = 13;
+        public static final int extensionMotorPort = 14;
+        public static final int clawNeoPort = 15;
+        public static final int armAbsoluteEncoderPort = 0;
+        public static final int extensionLimitSwitchPort = 4;
+    }
+
+    public static double armEncoderOffset = 140.1;
+    public static double kArmP = 0.25;
+    public static double kArmI = 0.0;
+    public static double kArmD = 0.0;
+
+    public enum ArmPosition {
+        START(-108.0),
+        INTAKE(-108.0),
+        CONE_LOW(-75.0),
+        CONE_MEDIUM(-20.0),
+        CONE_HIGH(5.0),
+        CUBE_LOW(-75.0),
+        CUBE_MEDIUM(-25.0),
+        CUBE_HIGH(0.0),
+        SLIDE_GRAB(0.0);
+
+        private final double position;
+
+        ArmPosition(double position) {
+          this.position = position;
+        }
+
+        public double getPosition() {
+            return position;
+        }
+    }
+
+    public enum ExtensionPosition {
+        RESET(0.0),
+        INTAKE(0.0),
+        EXTEND(0.0),
+        RETRACT(0.0);
+
+        private final double position;
+
+        ExtensionPosition(double position) {
+            this.position = position;
+        }
+
+        public double getPosition() {
+            return position;
+        }
+    }
 
   public static int kTimeoutMs = 30;
 
   public static class OperatorConstants {
+    // Controller port for driving
     public static final int kDriverControllerPort = 0;
+    // Controller port for mechanisms (like arm/claw)
     public static final int kMechanismControllerPort = 1;
-
-    public static final int kDriverYAxis = 1;
-    public static final int kDriverXAxis = 0;
-    public static final int kDriverRotAxis = 4;
-    public static final int kDriverFieldOrientedButtonIdx = 1;
-
-    public static final double kDeadband = 0.05;
   }
 
   public static final class Swerve {
@@ -111,15 +157,6 @@ public final class Constants {
       public static final int backRightTurnMotor = 6;
       public static final int frontRightDriveMotor = 7;
       public static final int frontRightTurnMotor = 8;
-     
-      public static final int pneumaticHubCANID = 9;
-
-      public static final int clawNeo = 15;
-
-      public static final int frontLeftCANCoder = 2;
-      public static final int backLeftCANCoder = 4;
-      public static final int backRightCANCoder = 6;
-      public static final int frontRightCANCoder = 8;
     }
   }
 
@@ -128,7 +165,4 @@ public final class Constants {
     OPENLOOP,
     CLOSEDLOOP
   }
-
-public static double kTurnToAngleP;
-public static double kTurnToAngleTolerance;
 }

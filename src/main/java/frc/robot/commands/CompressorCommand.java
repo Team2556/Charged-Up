@@ -8,33 +8,26 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.CompressorSubsystem;
 
 public class CompressorCommand extends CommandBase {
-  /** Creates a new CompressorOn. */
-  private CompressorSubsystem m_compressorSystem;
-  public CompressorCommand(CompressorSubsystem compressorSubsystem) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    m_compressorSystem = compressorSubsystem;
-    addRequirements(m_compressorSystem);
-  }
+    private final CompressorSubsystem m_compressorSystem = CompressorSubsystem.getInstance();
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    CompressorSubsystem.SmartDashboardReset();
-  }
+    public CompressorCommand() {
+        addRequirements(m_compressorSystem);
+    }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    CompressorSubsystem.periodicUpdate();
-  }
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {
+        m_compressorSystem.smartDashboardReset();
+    }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
+    // Called every time the scheduler runs while the command is scheduled.
+    @Override
+    public void execute() {
+        m_compressorSystem.update();
+    }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }

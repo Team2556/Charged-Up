@@ -5,68 +5,64 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * Turntable Subsystem
+ *  - Turntable Talon Motor
+ *  - 2 Infrared Sensors to detect cone orientation
+ *  - Manual Toggle to stop the turntable
+ */
 public class TurntableSubsystem extends SubsystemBase {
-  /** Creates a new Turntable. */
-  static TalonSRX turntableMotor = new TalonSRX(12);
-  public void TurntableRun() {
-    turntableMotor.set(ControlMode.PercentOutput, -0.36);
-  }
+    private final static TurntableSubsystem instance = TurntableSubsystem.getInstance();
+    private final TalonSRX turntableMotor = new TalonSRX(12);
+    private final DigitalInput leftIR = new DigitalInput(2);
+    private final DigitalInput rightIR = new DigitalInput(1);
 
-  DigitalInput leftIR = new DigitalInput(2);
-  DigitalInput rightIR = new DigitalInput(1);
-  boolean check = false;
-  boolean check2 = false;
+    private boolean manualToggle = false;
 
-public void TurntableRevAction(boolean BButton) {
-  if(BButton) {
-    TurntableRev();
-  }
-}
-
-/*public void TurntableOps() {
-  if (!rightIR.get() && !leftIR.get()) {
-    turntableMotor.set(ControlMode.PercentOutput, 0.0);
-  } else {
-    turntableMotor.set(ControlMode.PercentOutput, -0.4);
-  }
-  // SmartDashboard.putBoolean("leftIR", leftIR.get());
-  // SmartDashboard.putBoolean("right", rightIR.get());
-}*/
-public boolean ToggleTurntable(Trigger button){
-  if (button.getAsBoolean()){
-  check = !check;
-  }
-  return check;
-  
-}
-public void TurntableSpin(boolean flag) {
-  if (flag) {
-      if (!rightIR.get() && !leftIR.get()) {
-        turntableMotor.set(ControlMode.PercentOutput, 0);
-      }
-      else {
-        turntableMotor.set(ControlMode.PercentOutput, -0.36);
-      }
+    public TurntableSubsystem() {
+        turntableMotor.configFactoryDefault();
+        turntableMotor.setNeutralMode(NeutralMode.Brake);
+        turntableMotor.setInverted(true);
     }
-  else{
-  turntableMotor.set(ControlMode.PercentOutput, 0);
-  }
-}
 
-public void TurntableRev() {
-    turntableMotor.set(ControlMode.PercentOutput, -0.36);
-  }
- public void TurntableReset()
- {
-    turntableMotor.set(ControlMode.PercentOutput, 0.0);
- }
+    public void turntableSpin() {
+        if((rightIR.get() || leftIR.get()) && manualToggle)
+            turntableMotor.set(ControlMode.PercentOutput, 0.3);
+        else
+            turntableMotor.set(ControlMode.PercentOutput, 0);
+    }
 
+    public void setTurntableMotor(double speed) {
+        turntableMotor.set(ControlMode.PercentOutput, speed);
+    }
+
+    public void stopTurnTableMotor() {
+        setTurntableMotor(0.0);
+    }
+
+    public void setManualToggle(boolean manualToggle) {
+        this.manualToggle = manualToggle;
+    }
+
+    public boolean getManualToggle() {
+        return manualToggle;
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putBoolean("Right IR", rightIR.get());
+        SmartDashboard.putBoolean("Left IR", leftIR.get());
+    }
+
+    public static TurntableSubsystem getInstance() {
+        if(instance == null)
+            return new TurntableSubsystem();
+        return instance;
+    }
 }
