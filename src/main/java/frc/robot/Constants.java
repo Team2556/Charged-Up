@@ -34,7 +34,7 @@ public final class Constants {
     public enum ArmPosition {
         START(-109.0),
         GRAB(-109.0),
-        INTAKE(-90.0),
+        INTAKE(-90.0 - 4.0),
         CONE_LOW(-75.0),
         CONE_MEDIUM(-20.0),
         CONE_HIGH(5.0),
@@ -56,7 +56,8 @@ public final class Constants {
 
     public enum ExtensionPosition {
         RESET(0.0),
-        GRAB(105.0),
+        GRAB_CONE(105.0),
+        GRAB_CUBE(60.0),
         EXTEND(120.0),
         RETRACT(0.0);
 
@@ -109,6 +110,16 @@ public final class Constants {
     public static final double kD_Y = 0;
     public static final double kP_Theta = 8;
     public static final double kD_Theta = 0;
+
+    public static final double kPathingX_kP = 0.1;
+    public static final double kPathingX_kI = 0;
+    public static final double kPathingX_kD = 0;
+    public static final double kPathingY_kP = 0.1;
+    public static final double kPathingY_kI = 0;
+    public static final double kPathingY_kD = 0;
+    public static final double kPathingTheta_kP = 3;
+    public static final double kPathingTheta_kI = 0;
+    public static final double kPathingTheta_kD = 0;
 
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(

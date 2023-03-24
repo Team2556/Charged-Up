@@ -43,11 +43,11 @@ public class ClawSubsystem extends SubsystemBase {
 
 
     public void clawPullAction() {
-        clawSpin.set(1.0);
+        clawSpin.set(0.3);
     }
 
     public void clawPushAction() {
-       clawSpin.set(-1.0);
+       clawSpin.set(-0.3);
     }
 
     public void clawStop() {
@@ -62,11 +62,6 @@ public class ClawSubsystem extends SubsystemBase {
         } else {
             clawStop();
         }
-    }
-
-    @Override
-    public void periodic() {
-        SmartDashboard.putNumber("Claw Current", clawSpin.getOutputCurrent());
     }
 
     public static ClawSubsystem getInstance() {

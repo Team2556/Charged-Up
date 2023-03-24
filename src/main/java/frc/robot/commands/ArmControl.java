@@ -105,7 +105,7 @@ public class ArmControl extends CommandBase {
 
                 if(firstAutoLoop) {
                     m_clawSubsystem.clawOpenAction();
-                    m_armSubsystem.setExtensionPosition(Constants.ExtensionPosition.GRAB);
+                    m_armSubsystem.setExtensionPosition(m_armSubsystem.getCones() ? Constants.ExtensionPosition.GRAB_CONE : Constants.ExtensionPosition.GRAB_CUBE);
                     firstAutoLoop = false;
                 }
 
@@ -115,7 +115,8 @@ public class ArmControl extends CommandBase {
                     m_armSubsystem.setExtensionPosition(Constants.ExtensionPosition.RETRACT);
                 }
 
-                m_clawSubsystem.clawPullAction();
+                if(!m_armSubsystem.getCones())
+                    m_clawSubsystem.clawPullAction();
                 m_armSubsystem.setExtensionPositionPID(m_armSubsystem.getExtensionPosition().getPosition());
         }
     }

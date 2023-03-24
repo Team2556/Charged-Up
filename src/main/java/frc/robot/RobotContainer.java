@@ -51,9 +51,9 @@ public class RobotContainer {
                 .withWidget(BuiltInWidgets.kNumberSlider)
                 .withProperties((Map.of("Min", 0, "Max", 10, "Block increment", 1)))
                 .getEntry();
-        autoChooser.setDefaultOption("Nothing", Commands.waitSeconds(5));
+        autoChooser.setDefaultOption("Regular Auto", new AutoGroup());
+        autoChooser.addOption("Nothing", Commands.waitSeconds(5));
         autoChooser.addOption("Auto Balance", swerveSubsystem.autoBalance());
-        SmartDashboard.putData("Auto Chooser",autoChooser);
         // Configure default commands
         swerveSubsystem.setDefaultCommand(
             // The left stick controls translation of the robot.
@@ -98,7 +98,10 @@ public class RobotContainer {
         );
 
         turntableSubsystem.setDefaultCommand(
-            new TurntableSpin()
+            new TurntableSpin(
+                    xbox2.start(),
+                    xbox2.b()
+            )
         );
 
         // Configure the trigger bindings
@@ -116,7 +119,7 @@ public class RobotContainer {
     private void configureBindings() {
         //ToDo Do this in a better way
         xbox1.start().onTrue(new InstantCommand(() -> swerveSubsystem.setIsFieldRelative(!swerveSubsystem.getIsFieldRelative())));
-        xbox2.start().onTrue(new InstantCommand(() -> SwerveDrive.setPrecisionMode(!SwerveDrive.getPrecisionMode())));
+        xbox1.a().onTrue(new InstantCommand(() -> SwerveDrive.setPrecisionMode(!SwerveDrive.getPrecisionMode())));
         xbox2.a().onTrue(new InstantCommand(() -> turntableSubsystem.setManualToggle(!turntableSubsystem.getManualToggle())));
         xbox2.y().onTrue(new InstantCommand(() -> armSubsystem.setCones(!armSubsystem.getCones())));
         xbox2.x().onTrue(new InstantCommand(() -> ArmControl.setArmState(ArmControl.ArmState.AUTO_PICKUP)));
@@ -130,6 +133,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return Commands.sequence(
                 Commands.waitSeconds(kAutoStartDelaySeconds.getDouble(0)),
-                autoChooser.getSelected());
+//                autoChooser.getSelected());
+                swerveSubsystem.autoBalance());
     }
 }

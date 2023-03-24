@@ -12,7 +12,7 @@ public class SwerveDrive extends CommandBase {
     private final DoubleSupplier m_throttleInput, m_strafeInput, m_rotationInput;
     private final Trigger m_gyroReset;
     private static boolean precisionMode = false;
-    private double regularScalar = 0.7, precisionScalar = 0.2;
+    private double regularScalar = 1.0, precisionScalar = 0.2;
 
     /**
      * Creates a new ExampleCommand.
