@@ -4,13 +4,19 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.ClawOpenClose;
+import frc.robot.commands.ClawPullPush;
+import frc.robot.commands.SwerveDrive;
+import frc.robot.commands.CompressorCommand;
+import frc.robot.subsystems.Claw;
+import frc.robot.subsystems.CompressorSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,19 +25,49 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+
+  SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  Claw clawSubsystem = new Claw();
+  Claw clawSpinSubsystem = new Claw();
+  CompressorSubsystem compressorSubsystem = new CompressorSubsystem();
+
+  public static boolean fieldRelativeDriving = true;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController xbox1 =
+      new CommandXboxController(Constants.OperatorConstants.kDriverControllerPort);
+
+  
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure the trigger bindings
-    configureBindings();
-  }
+    // Configure default commands
 
+    swerveSubsystem.setDefaultCommand(
+            // The left stick controls translation of the robot.
+            // Turning is controlled by the X axis of the right stick.
+            new SwerveDrive(
+                    swerveSubsystem,
+                    xbox1::getLeftY,
+                    xbox1::getLeftX,
+                    xbox1::getRightX,
+                    xbox1.a(),
+                    fieldRelativeDriving));
+    
+    clawSubsystem.setDefaultCommand(
+            new ClawOpenClose(
+                    clawSubsystem,
+                    xbox1.leftBumper(),
+                    xbox1.rightBumper()));
+    clawSpinSubsystem.setDefaultCommand(
+            new ClawPullPush(
+                    clawSpinSubsystem,
+                    xbox1.x(),
+                    xbox1.y())); 
+     compressorSubsystem.setDefaultCommand(
+            new CompressorCommand(
+                    compressorSubsystem));
+  }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
@@ -42,13 +78,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
   /**
@@ -58,6 +88,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return new WaitCommand(0);
   }
 }
