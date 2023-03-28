@@ -58,7 +58,7 @@ public final class Photon extends SubsystemBase
                             CAMERA_HEIGHT_METERS,
                             TARGET_HEIGHT_METERS,
                             CAMERA_PITCH_RADIANS,
-                            Units.degreesToRadians(result.getBestTarget().getPitch()));
+                            Units.degreesToRadians(result.getBestTarget().getYaw()));
                     SmartDashboard.putNumber("range", range);
                     
                 }
@@ -70,7 +70,7 @@ public final class Photon extends SubsystemBase
                             CAMERA_HEIGHT_METERS,
                             TARGET_HEIGHT_METERS,
                             CAMERA_PITCH_RADIANS,
-                            Units.degreesToRadians(result.getBestTarget().getPitch()));
+                            Units.degreesToRadians(result.getBestTarget().getYaw()));
                     SmartDashboard.putNumber("range", range);
                     
                 }
@@ -81,7 +81,7 @@ public final class Photon extends SubsystemBase
                             CAMERA_HEIGHT_METERS,
                             TARGET_HEIGHT_METERS,
                             CAMERA_PITCH_RADIANS,
-                            Units.degreesToRadians(result.getBestTarget().getPitch()));
+                            Units.degreesToRadians(result.getBestTarget().getYaw()));
                     SmartDashboard.putNumber("range", range);
                     
                 }
@@ -93,7 +93,7 @@ public final class Photon extends SubsystemBase
                             CAMERA_HEIGHT_METERS,
                             TARGET_HEIGHT_METERS,
                             CAMERA_PITCH_RADIANS,
-                            Units.degreesToRadians(result.getBestTarget().getPitch()));
+                            Units.degreesToRadians(result.getBestTarget().getYaw()));
                     SmartDashboard.putNumber("range", range);
                     
                 }
@@ -104,7 +104,7 @@ public final class Photon extends SubsystemBase
                             CAMERA_HEIGHT_METERS,
                             TARGET_HEIGHT_METERS,
                             CAMERA_PITCH_RADIANS,
-                            Units.degreesToRadians(result.getBestTarget().getPitch()));
+                            Units.degreesToRadians(result.getBestTarget().getYaw()));
                     SmartDashboard.putNumber("range", range);
                     
                 }
@@ -115,7 +115,7 @@ public final class Photon extends SubsystemBase
                             CAMERA_HEIGHT_METERS,
                             TARGET_HEIGHT_METERS,
                             CAMERA_PITCH_RADIANS,
-                            Units.degreesToRadians(result.getBestTarget().getPitch()));
+                            Units.degreesToRadians(result.getBestTarget().getYaw()));
                     SmartDashboard.putNumber("range", range);
                     
                 }
@@ -126,7 +126,7 @@ public final class Photon extends SubsystemBase
                             CAMERA_HEIGHT_METERS,
                             TARGET_HEIGHT_METERS,
                             CAMERA_PITCH_RADIANS,
-                            Units.degreesToRadians(result.getBestTarget().getPitch()));
+                            Units.degreesToRadians(result.getBestTarget().getYaw()));
                     SmartDashboard.putNumber("range", range);
                     
                 }
@@ -138,7 +138,7 @@ public final class Photon extends SubsystemBase
                             CAMERA_HEIGHT_METERS,
                             TARGET_HEIGHT_METERS,
                             CAMERA_PITCH_RADIANS,
-                            Units.degreesToRadians(result.getBestTarget().getPitch()));
+                            Units.degreesToRadians(result.getBestTarget().getYaw()));
                             SmartDashboard.putNumber("range", range);
                             
                 }
