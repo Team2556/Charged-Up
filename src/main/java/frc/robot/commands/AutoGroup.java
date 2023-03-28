@@ -14,14 +14,14 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoGroup extends SequentialCommandGroup {
   /** Creates a new AutoGroup. */
-  public AutoGroup() {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-      new ResetArmCommand(),
-      new GrabCommand() /*,
-      new PositioningCommand(),
-      new ArmRetractAndPrep(),
-      new AutoBalance()*/);
-  }
+//  public AutoGroup() {
+//    // Add your commands in the addCommands() call, e.g.
+//    // addCommands(new FooCommand(), new BarCommand());
+//    addCommands(
+//      new ResetArmCommand(),
+//      new GrabCommand() /*,
+//      new PositioningCommand(),
+//      new ArmRetractAndPrep(),
+//      new AutoBalance()*/);
+//  }
 }

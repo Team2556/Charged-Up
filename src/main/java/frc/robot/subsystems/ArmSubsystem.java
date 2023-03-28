@@ -11,6 +11,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -54,9 +55,12 @@ public class ArmSubsystem extends SubsystemBase {
         extensionPIDController.setP(0.02);
         extensionPIDController.setI(0.0);
         extensionPIDController.setD(0.0);
+
     }
 
     public void setArmMotor(double pos) {
+        if(armPosition.equals(ArmPosition.GRAB) && getLimitSwitch())
+            return;
         double armPos = pos + armEncoderOffset;
         armMotor.setVoltage(armPIDController.calculate(getArmEncoderPosition(), armPos) + armFFController.calculate(Math.toRadians(armPos), 1.0));
     }
@@ -90,6 +94,7 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putString("Extension Pos", getExtensionPosition().name());
         SmartDashboard.putString("Arm Game Piece", getCones() ? "Cones" : "Cubes");
     }
+
 
     public void setCones(boolean cones) {
         this.cones = cones;

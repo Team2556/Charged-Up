@@ -109,11 +109,15 @@ public class ArmControl extends CommandBase {
                     firstAutoLoop = false;
                 }
 
-                if(almostEqual(m_armSubsystem.getExtensionPosition().getPosition(), m_armSubsystem.getExtensionEncoderPosition(), 3)) {
+                if(almostEqual(m_armSubsystem.getExtensionPosition().getPosition(), m_armSubsystem.getExtensionEncoderPosition(), 1)) {
+                    m_clawSubsystem.resetTimer();
                     if(m_armSubsystem.getCones())
                         m_clawSubsystem.clawCloseAction();
                     m_armSubsystem.setExtensionPosition(Constants.ExtensionPosition.RETRACT);
                 }
+
+                if(m_armSubsystem.getCones() && m_armSubsystem.getExtensionPosition().equals(Constants.ExtensionPosition.RETRACT) && !almostEqual(m_armSubsystem.getExtensionPosition().getPosition(), m_armSubsystem.getExtensionEncoderPosition(), 8))
+                    m_clawSubsystem.runClawForSeconds(0.6, 0.4);
 
                 if(!m_armSubsystem.getCones())
                     m_clawSubsystem.clawPullAction();

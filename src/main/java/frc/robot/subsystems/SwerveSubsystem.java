@@ -8,14 +8,17 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Swerve.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static frc.robot.Constants.Swerve.*;
 
@@ -50,7 +53,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                     backRightCANCoderOffset)));
     private final AHRS gyro = new AHRS();
 
-    private boolean isFieldRelative = true;
+    private boolean isFieldRelative = false;
 
     private final SwerveDriveOdometry m_odometry =
             new SwerveDriveOdometry(
@@ -58,6 +61,9 @@ public class SwerveSubsystem extends SubsystemBase {
                     getHeadingRotation2d(),
                     getModulePositions(),
                     new Pose2d());
+
+    public Supplier<Pose2d> poseSupplier = m_odometry::getPoseMeters;
+    private final Timer timer = new Timer();
 
     private ProfiledPIDController m_xController =
             new ProfiledPIDController(kP_X, 0, kD_X, kThetaControllerConstraints);
@@ -73,6 +79,7 @@ public class SwerveSubsystem extends SubsystemBase {
                 gyro.reset();
             } catch (InterruptedException ignore) {}
         }).start();
+        timer.start();
     }
 
     public void drive(
@@ -165,6 +172,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void gyroZero() {
         gyro.reset();
+        gyro.setAngleAdjustment(180.0);
     }
 
     public void setIsFieldRelative(boolean isFieldRelative) {
@@ -180,12 +188,17 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("robot x", m_odometry.getPoseMeters().getX());
         SmartDashboard.putNumber("robot y", m_odometry.getPoseMeters().getY());
         SmartDashboard.putNumber("robot rotation", m_odometry.getPoseMeters().getRotation().getDegrees());
+
+        SmartDashboard.putNumber("gyro X Accel", gyro.getRawAccelX());
+        SmartDashboard.putNumber("gyro Y Accel", gyro.getRawAccelY());
+        SmartDashboard.putNumber("gyro Z Accel", gyro.getRawAccelZ());
     }
 
     @Override
     public void periodic() {
         updateOdometry();
         updateSmartDashboard();
+        SmartDashboard.putNumber("Pitch", gyro.getPitch());
     }
 
     public void setX() {
@@ -200,14 +213,27 @@ public class SwerveSubsystem extends SubsystemBase {
                 Commands.sequence(
                         Commands.run(
                                 ()->this.drive(2/kMaxSpeedMetersPerSecond,
-                                        0,0,true),this).until(()->Math.abs(gyro.getPitch())>=14.3),
+                                        0,0,true),this).until(()->Math.abs(gyro.getPitch())>=18.0),
                         Commands.run(
-                                ()->this.drive(0.3/kMaxSpeedMetersPerSecond,
-                                        0,0,true),this).until(()->Math.abs(gyro.getPitch())<=12.5),
+                                ()->this.drive(0.4/kMaxSpeedMetersPerSecond,
+                                        0,0,true),this).until(()->Math.abs(gyro.getPitch())<=12.0)
+                                .alongWith(new InstantCommand(this::resetTimer)),
+//                        Commands.waitSeconds(0.5),
+                        Commands.run(
+                                ()->this.drive(-0.5/kMaxSpeedMetersPerSecond,
+                                        0,0,true),this).until(()->Math.abs(gyro.getPitch())>=4.0 && timer.get() > 2.0),
                         Commands.run(this::setX,this)),
-                Commands.waitSeconds(15));
+                        Commands.waitSeconds(15));
         // Commands.run(
         //   ()->this.drive(0,0,0,true,true),this));
+    }
+
+    public Timer getTimer() {
+        return timer;
+    }
+
+    public void resetTimer() {
+        timer.reset();
     }
 
     public static SwerveSubsystem getInstance() {

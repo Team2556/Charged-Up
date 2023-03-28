@@ -58,6 +58,7 @@ public final class Constants {
         RESET(0.0),
         GRAB_CONE(105.0),
         GRAB_CUBE(60.0),
+        PLACE_CONE(60.0),
         EXTEND(120.0),
         RETRACT(0.0);
 
@@ -100,7 +101,7 @@ public final class Constants {
     public static final SwerveDriveKinematics kSwerveKinematics =
             new SwerveDriveKinematics(kModuleTranslations);
 
-    public static final double kMaxSpeedMetersPerSecond = Units.feetToMeters(12);
+    public static final double kMaxSpeedMetersPerSecond = Units.feetToMeters(16);
     public static final double kMaxRotationRadiansPerSecond = Math.PI * 2.0;
     public static final double kMaxRotationRadiansPerSecondSquared = Math.PI * 2.0;
 

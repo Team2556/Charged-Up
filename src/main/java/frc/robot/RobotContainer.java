@@ -20,6 +20,8 @@ import frc.robot.subsystems.*;
 
 import java.util.Map;
 
+import static frc.robot.Constants.Swerve.kMaxSpeedMetersPerSecond;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -128,12 +130,19 @@ public class RobotContainer {
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
+     *
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+        swerveSubsystem.getTimer().reset();
         return Commands.sequence(
-                Commands.waitSeconds(kAutoStartDelaySeconds.getDouble(0)),
+                Commands.race(
+                        Commands.sequence(
+                                Commands.run(
+                                        ()->swerveSubsystem.drive(0.5/kMaxSpeedMetersPerSecond,
+                                                0,0,true),swerveSubsystem).until(()->swerveSubsystem.getTimer().get() > 5.0))));
+//                new AutoPlace());
 //                autoChooser.getSelected());
-                swerveSubsystem.autoBalance());
+//                swerveSubsystem.autoBalance());
     }
 }

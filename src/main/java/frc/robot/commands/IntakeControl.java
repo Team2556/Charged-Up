@@ -30,12 +30,12 @@ public class IntakeControl extends CommandBase {
 
     @Override
     public void execute() {
-        if(rightTrigger.getAsDouble() > 0.5) {
-            intakeSubsystem.setIntakeMotor(rightTrigger.getAsDouble() * 0.4);
+        if(leftTrigger.getAsDouble() > 0.5) {
+            intakeSubsystem.setIntakeMotor(leftTrigger.getAsDouble() * -0.4);
             intakeSubsystem.intakeExtend();
             armSubsystem.setArmPosition(Constants.ArmPosition.INTAKE);
-        } else if(leftTrigger.getAsDouble() > 0.5) {
-            intakeSubsystem.setIntakeMotor(leftTrigger.getAsDouble() * -0.4);
+        } else if(rightTrigger.getAsDouble() > 0.5) {
+            intakeSubsystem.setIntakeMotor(rightTrigger.getAsDouble() * 0.4);
             intakeSubsystem.intakeExtend();
             armSubsystem.setArmPosition(Constants.ArmPosition.INTAKE);
         } else {

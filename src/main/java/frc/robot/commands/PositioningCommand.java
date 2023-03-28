@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
@@ -45,17 +44,17 @@ public class PositioningCommand extends CommandBase {
     Constants.Swerve.kPathingY_kP, Constants.Swerve.kPathingY_kI, Constants.Swerve.kPathingY_kD);
  // PID controller for robot heading
  private PIDController mThetaController = new PIDController(
-    Constants.Swerve.kPathingTheta_kP, Constants.Swerve.kPathingTheta_kI, 
+    Constants.Swerve.kPathingTheta_kP, Constants.Swerve.kPathingTheta_kI,
     Constants.Swerve.kPathingTheta_kD);
 
   PPSwerveControllerCommand path = new PPSwerveControllerCommand(
-    mTrajectory, 
-    m_swerveSubsystem.poseSupplier, 
-    Constants.Swerve.kSwerveKinematics, 
-    mXController, 
-    mYController, 
-    mThetaController, 
-    m_swerveSubsystem::setModuleStates, 
+    mTrajectory,
+    m_swerveSubsystem.poseSupplier,
+    Constants.Swerve.kSwerveKinematics,
+    mXController,
+    mYController,
+    mThetaController,
+    m_swerveSubsystem::setModuleStates,
     m_swerveSubsystem
   );
   public PositioningCommand() {
