@@ -135,17 +135,18 @@ public class SwerveSubsystem extends SubsystemBase {
     public SwerveModuleState[] getModuleStates() {
         return new SwerveModuleState[] {
                 m_swerveModules.get(ModulePosition.FRONT_LEFT).getState(),
-                m_swerveModules.get(ModulePosition.FRONT_RIGHT).getState(),
+                m_swerveModules.get(ModulePosition.BACK_RIGHT).getState(),
                 m_swerveModules.get(ModulePosition.BACK_LEFT).getState(),
-                m_swerveModules.get(ModulePosition.BACK_RIGHT).getState()
+                m_swerveModules.get(ModulePosition.FRONT_RIGHT).getState()
         };
     }
+
     public SwerveModulePosition[] getModulePositions() {
         return new SwerveModulePosition[] {
                 m_swerveModules.get(ModulePosition.FRONT_LEFT).getPosition(),
-                m_swerveModules.get(ModulePosition.FRONT_RIGHT).getPosition(),
+                m_swerveModules.get(ModulePosition.BACK_RIGHT).getPosition(),
                 m_swerveModules.get(ModulePosition.BACK_LEFT).getPosition(),
-                m_swerveModules.get(ModulePosition.BACK_RIGHT).getPosition()
+                m_swerveModules.get(ModulePosition.FRONT_RIGHT).getPosition()
         };
     }
 
