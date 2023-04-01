@@ -14,10 +14,11 @@ public class PhotonCommand extends CommandBase {
   private Photon m_photonSubsystem;
   private Trigger m_x;
   Photon movementObj = new Photon();
-  SwerveSubsystem moveObj= new SwerveSubsystem();
+  SwerveSubsystem moveObj;
 
-  public PhotonCommand(Photon photonSubsystem, Trigger x) {
+  public PhotonCommand(Photon photonSubsystem, Trigger x, SwerveSubsystem swerve) {
     // Use addRequirements() here to declare subsystem dependencies.
+    moveObj = swerve;
     m_photonSubsystem = photonSubsystem;
     m_x = x;
   }
