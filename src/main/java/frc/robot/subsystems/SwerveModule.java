@@ -2,12 +2,10 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -16,11 +14,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.utility.CtreUtils;
 import frc.robot.utility.RevUtils;
 
@@ -36,7 +31,7 @@ public class SwerveModule extends SubsystemBase {
     WPI_TalonFX m_driveMotor;
     private SparkMaxPIDController m_turnController;
     private final RelativeEncoder m_turnEncoder;
-    DutyCycleEncoder m_angleEncoder;
+    SparkMaxAbsoluteEncoder m_angleEncoder;
     double m_angleOffset;
     double m_currentAngle;
     double m_lastAngle;
@@ -57,13 +52,13 @@ public class SwerveModule extends SubsystemBase {
             int moduleNumber,
             CANSparkMax turnMotor,
             WPI_TalonFX driveMotor,
-            DutyCycleEncoder angleEncoder,
             double angleOffset) {
         m_moduleNumber = moduleNumber;
         m_turnMotor = turnMotor;
         m_driveMotor = driveMotor;
-        m_angleOffset = angleOffset;
-        
+        m_angleEncoder = turnMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
+
+//        m_angleOffset = m_angleEncoder.getZeroOffset();
 
         m_driveMotor.configFactoryDefault();
         m_driveMotor.configAllSettings(CtreUtils.generateDriveMotorConfig());
@@ -71,8 +66,6 @@ public class SwerveModule extends SubsystemBase {
         m_turnMotor.restoreFactoryDefaults();
         RevUtils.setTurnMotorConfig(m_turnMotor);
         m_turnMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-
-        m_angleEncoder = angleEncoder;
 
         m_turnEncoder = m_turnMotor.getEncoder();
         m_turnEncoder.setPositionConversionFactor(kTurnRotationsToDegrees);
@@ -88,7 +81,7 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void resetAngleToAbsolute() {
-        double angle = 0 - pwmToDegrees(m_angleEncoder.getAbsolutePosition());
+        double angle = (m_angleEncoder.getPosition() * 360.0) - m_angleOffset;
         m_turnEncoder.setPosition(angle);
     }
 
@@ -108,7 +101,6 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
-        //ToDo reset turn encoder position to the absolute encoder position.
         m_currentAngle = m_turnEncoder.getPosition();
         desiredState = RevUtils.optimize(desiredState, getHeadingRotation2d());
 
@@ -122,7 +114,7 @@ public class SwerveModule extends SubsystemBase {
         double angle =
                 (Math.abs(desiredState.speedMetersPerSecond) <= (kMaxSpeedMetersPerSecond * 0.01))
                         ? m_lastAngle
-                        : desiredState.angle.getDegrees() - m_angleOffset; // Prevent rotating module if speed is less than 1%. Prevents Jittering.
+                        : desiredState.angle.getDegrees(); // Prevent rotating module if speed is less than 1%. Prevents Jittering.
         m_turnController.setReference(angle, CANSparkMax.ControlType.kPosition, POS_SLOT);
         m_lastAngle = angle;
     }
@@ -146,11 +138,7 @@ public class SwerveModule extends SubsystemBase {
         SmartDashboard.putNumber(
                 "module " + m_moduleNumber + " heading", getState().angle.getDegrees());
         SmartDashboard.putNumber(
-                "module " + m_moduleNumber + " CANCoder reading", pwmToDegrees(m_angleEncoder.getAbsolutePosition()));
-    }
-
-    private double pwmToDegrees(double signal) {
-        return signal * 360.0;
+                "module " + m_moduleNumber + " CANCoder reading", m_angleEncoder.getPosition() * 360.0);
     }
 
     @Override

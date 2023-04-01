@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.CANCoder;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -9,17 +8,22 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.Swerve.ModulePosition;
-import frc.robot.Constants.Swerve.Ports;
+import frc.robot.Constants.Swerve.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static frc.robot.Constants.Swerve.*;
 
 public class SwerveSubsystem extends SubsystemBase {
+    private final static SwerveSubsystem instance = getInstance();
     private final HashMap<ModulePosition, SwerveModule> m_swerveModules =
             new HashMap<>(
                     Map.of(
@@ -28,30 +32,28 @@ public class SwerveSubsystem extends SubsystemBase {
                                     0,
                                     new CANSparkMax(Ports.frontLeftTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     new WPI_TalonFX(Ports.frontLeftDriveMotor),
-                                    new DutyCycleEncoder(Ports.frontLeftBoreEncoder),
                                     frontLeftCANCoderOffset),
                             ModulePosition.FRONT_RIGHT,
                             new SwerveModule(
-                                    1,
+                                    3,
                                     new CANSparkMax(Ports.frontRightTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     invertMotor(Ports.frontRightDriveMotor),
-                                    new DutyCycleEncoder(Ports.frontRightBoreEncoder),
                                     frontRightCANCoderOffset),
                             ModulePosition.BACK_LEFT,
                             new SwerveModule(
                                     2,
                                     new CANSparkMax(Ports.backLeftTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     new WPI_TalonFX(Ports.backLeftDriveMotor),
-                                    new DutyCycleEncoder(Ports.backLeftBoreEncoder),
                                     backLeftCANCoderOffset),
                             ModulePosition.BACK_RIGHT,
                             new SwerveModule(
-                                    3,
+                                    1,
                                     new CANSparkMax(Ports.backRightTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     invertMotor(Ports.backRightDriveMotor),
-                                    new DutyCycleEncoder(Ports.backRightBoreEncoder),
                                     backRightCANCoderOffset)));
     private final AHRS gyro = new AHRS();
+
+    private boolean isFieldRelative = false;
 
     private final SwerveDriveOdometry m_odometry =
             new SwerveDriveOdometry(
@@ -59,6 +61,9 @@ public class SwerveSubsystem extends SubsystemBase {
                     getHeadingRotation2d(),
                     getModulePositions(),
                     new Pose2d());
+
+    public Supplier<Pose2d> poseSupplier = m_odometry::getPoseMeters;
+    private final Timer timer = new Timer();
 
     private ProfiledPIDController m_xController =
             new ProfiledPIDController(kP_X, 0, kD_X, kThetaControllerConstraints);
@@ -68,16 +73,21 @@ public class SwerveSubsystem extends SubsystemBase {
             new ProfiledPIDController(kP_Theta, 0, kD_Theta, kThetaControllerConstraints);
 
     public SwerveSubsystem() {
-       gyro.reset();
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+                gyro.reset();
+            } catch (InterruptedException ignore) {}
+        }).start();
+        timer.start();
     }
 
     public void drive(
             double throttle,
             double strafe,
             double rotation,
-            boolean isFieldRelative,
             boolean isOpenLoop) {
-        //ToDo See if it is necessary to disable turning while moving.
+
         throttle *= kMaxSpeedMetersPerSecond;
         strafe *= kMaxSpeedMetersPerSecond;
         rotation *= kMaxRotationRadiansPerSecond;
@@ -90,10 +100,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
         SwerveModuleState[] moduleStates = kSwerveKinematics.toSwerveModuleStates(chassisSpeeds);
 
-        SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, kMaxSpeedMetersPerSecond);
+        setModuleStates(moduleStates);
+    }
 
+    public void setModuleStates(SwerveModuleState[] desiredStates) {
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, kMaxSpeedMetersPerSecond);
         for (SwerveModule module : m_swerveModules.values())
-            module.setDesiredState(moduleStates[module.getModuleNumber()], isOpenLoop);
+            module.setDesiredState(desiredStates[module.getModuleNumber()], true);
     }
 
     public void setSwerveModuleStates(SwerveModuleState[] states, boolean isOpenLoop) {
@@ -108,7 +121,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public Rotation2d getHeadingRotation2d() {
-        return Rotation2d.fromDegrees(getHeadingDegrees());
+        return Rotation2d.fromDegrees(-getHeadingDegrees());
     }
 
     public Pose2d getPoseMeters() {
@@ -122,17 +135,18 @@ public class SwerveSubsystem extends SubsystemBase {
     public SwerveModuleState[] getModuleStates() {
         return new SwerveModuleState[] {
                 m_swerveModules.get(ModulePosition.FRONT_LEFT).getState(),
-                m_swerveModules.get(ModulePosition.FRONT_RIGHT).getState(),
+                m_swerveModules.get(ModulePosition.BACK_RIGHT).getState(),
                 m_swerveModules.get(ModulePosition.BACK_LEFT).getState(),
-                m_swerveModules.get(ModulePosition.BACK_RIGHT).getState()
+                m_swerveModules.get(ModulePosition.FRONT_RIGHT).getState()
         };
     }
+
     public SwerveModulePosition[] getModulePositions() {
         return new SwerveModulePosition[] {
                 m_swerveModules.get(ModulePosition.FRONT_LEFT).getPosition(),
-                m_swerveModules.get(ModulePosition.FRONT_RIGHT).getPosition(),
+                m_swerveModules.get(ModulePosition.BACK_RIGHT).getPosition(),
                 m_swerveModules.get(ModulePosition.BACK_LEFT).getPosition(),
-                m_swerveModules.get(ModulePosition.BACK_RIGHT).getPosition()
+                m_swerveModules.get(ModulePosition.FRONT_RIGHT).getPosition()
         };
     }
 
@@ -157,11 +171,75 @@ public class SwerveSubsystem extends SubsystemBase {
         return talonFX;
     }
 
-    private void updateSmartDashboard() {}
+    public void gyroZero() {
+        gyro.reset();
+        gyro.setAngleAdjustment(180.0);
+    }
+
+    public void setIsFieldRelative(boolean isFieldRelative) {
+        this.isFieldRelative = isFieldRelative;
+    }
+
+    public boolean getIsFieldRelative() {
+        return isFieldRelative;
+    }
+
+    private void updateSmartDashboard() {
+        SmartDashboard.putNumber("gyro angle", gyro.getAngle());
+        SmartDashboard.putNumber("robot x", m_odometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("robot y", m_odometry.getPoseMeters().getY());
+        SmartDashboard.putNumber("robot rotation", m_odometry.getPoseMeters().getRotation().getDegrees());
+
+        SmartDashboard.putNumber("gyro X Accel", gyro.getRawAccelX());
+        SmartDashboard.putNumber("gyro Y Accel", gyro.getRawAccelY());
+        SmartDashboard.putNumber("gyro Z Accel", gyro.getRawAccelZ());
+    }
 
     @Override
     public void periodic() {
         updateOdometry();
         updateSmartDashboard();
+        SmartDashboard.putNumber("Pitch", gyro.getPitch());
+    }
+
+    public void setX() {
+        m_swerveModules.get(ModulePosition.FRONT_LEFT).setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), true);
+        m_swerveModules.get(ModulePosition.FRONT_RIGHT).setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), true);
+        m_swerveModules.get(ModulePosition.BACK_LEFT).setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), true);
+        m_swerveModules.get(ModulePosition.BACK_RIGHT).setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)), true);
+    }
+
+    public CommandBase autoBalance() {
+        return Commands.race(
+                Commands.sequence(
+                        Commands.run(
+                                ()->this.drive(2/kMaxSpeedMetersPerSecond,
+                                        0,0,true),this).until(()->Math.abs(gyro.getPitch())>=18.0),
+                        Commands.run(
+                                ()->this.drive(0.4/kMaxSpeedMetersPerSecond,
+                                        0,0,true),this).until(()->Math.abs(gyro.getPitch())<=12.0)
+                                .alongWith(new InstantCommand(this::resetTimer)),
+//                        Commands.waitSeconds(0.5),
+                        Commands.run(
+                                ()->this.drive(-0.5/kMaxSpeedMetersPerSecond,
+                                        0,0,true),this).until(()->Math.abs(gyro.getPitch())>=4.0 && timer.get() > 2.0),
+                        Commands.run(this::setX,this)),
+                        Commands.waitSeconds(15));
+        // Commands.run(
+        //   ()->this.drive(0,0,0,true,true),this));
+    }
+
+    public Timer getTimer() {
+        return timer;
+    }
+
+    public void resetTimer() {
+        timer.reset();
+    }
+
+    public static SwerveSubsystem getInstance() {
+        if(instance == null)
+            return new SwerveSubsystem();
+        return instance;
     }
 }
