@@ -32,7 +32,7 @@ public class RobotContainer {
 
   SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   Photon photonSubsystem = new Photon();
-  PhotonCommand run = new PhotonCommand(null, null);
+  PhotonCommand run = new PhotonCommand(photonSubsystem, null, swerveSubsystem);
   //Photon photon = new Photon();
 
   public static boolean fieldRelativeDriving = false;
@@ -73,7 +73,7 @@ public class RobotContainer {
     photonSubsystem.setDefaultCommand(
       new PhotonCommand(
         photonSubsystem,
-        xbox1.y()));}
+        xbox1.y(), swerveSubsystem));}
 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
