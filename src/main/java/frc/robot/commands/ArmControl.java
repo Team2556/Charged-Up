@@ -19,7 +19,8 @@ public class ArmControl extends CommandBase {
 
     public enum ArmState {
         MANUAL,
-        AUTO_PICKUP
+        AUTO_PICKUP,
+        AUTONOMOUS
     }
     
     public ArmControl(DoubleSupplier armStick, DoubleSupplier extensionStick) {
@@ -32,6 +33,7 @@ public class ArmControl extends CommandBase {
     @Override
     public void initialize() {
         timer.start();
+        firstAutoLoop = true;
     }
 
     @Override
@@ -122,7 +124,11 @@ public class ArmControl extends CommandBase {
                 if(!m_armSubsystem.getCones())
                     m_clawSubsystem.clawPullAction();
                 m_armSubsystem.setExtensionPositionPID(m_armSubsystem.getExtensionPosition().getPosition());
-        }
+                break;
+                case AUTONOMOUS:
+                break;
+
+            }
     }
 
     public static void setArmState(ArmState armState) {

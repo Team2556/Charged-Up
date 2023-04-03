@@ -134,15 +134,18 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        swerveSubsystem.getTimer().reset();
-        return Commands.sequence(
-                Commands.race(
-                        Commands.sequence(
-                                Commands.run(
-                                        ()->swerveSubsystem.drive(0.5/kMaxSpeedMetersPerSecond,
-                                                0,0,true),swerveSubsystem).until(()->swerveSubsystem.getTimer().get() > 5.0))));
+        
+        return new AutoGroup();
+    }
+}
+
+//swerveSubsystem.getTimer().reset();
+        // return Commands.sequence(
+        //         Commands.race(
+        //                 Commands.sequence(
+        //                         Commands.run(
+        //                                 ()->swerveSubsystem.drive(0.5/kMaxSpeedMetersPerSecond,
+        //                                         0,0,true),swerveSubsystem).until(()->swerveSubsystem.getTimer().get() > 5.0))));
 //                new AutoPlace());
 //                autoChooser.getSelected());
 //                swerveSubsystem.autoBalance());
-    }
-}
