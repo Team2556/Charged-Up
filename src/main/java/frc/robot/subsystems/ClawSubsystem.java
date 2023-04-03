@@ -16,7 +16,7 @@ import static frc.robot.Constants.Ports.*;
 
 public class ClawSubsystem extends SubsystemBase {
     private final static ClawSubsystem instance = getInstance();
-    public final DoubleSolenoid grabSolenoid = new DoubleSolenoid(
+    private final DoubleSolenoid grabSolenoid = new DoubleSolenoid(
           pneumaticHubCANID, PneumaticsModuleType.REVPH, grabSolenoidForward, grabSolenoidReverse);
     private final CANSparkMax clawSpin = new CANSparkMax(clawNeoPort, MotorType.kBrushless);
     private final Timer timer = new Timer();
@@ -30,15 +30,11 @@ public class ClawSubsystem extends SubsystemBase {
     }
 
     public void clawCloseAction() {
-        grabSolenoid.set(DoubleSolenoid.Value.kReverse);   
+        grabSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
 
     public void clawReset() {
         grabSolenoid.set(DoubleSolenoid.Value.kOff);
-    }
-
-    public String clawCheck() {
-        return grabSolenoid.get().toString();
     }
 
     public void clawOpenCloseButton(boolean rBumper, boolean lBumper) {
