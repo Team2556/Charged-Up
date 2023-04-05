@@ -242,4 +242,8 @@ public class SwerveSubsystem extends SubsystemBase {
             return new SwerveSubsystem();
         return instance;
     }
+
+    public SwerveDriveOdometry getOdometry() {
+        return m_odometry;
+    }
 }

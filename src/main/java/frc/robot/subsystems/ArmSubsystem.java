@@ -52,17 +52,22 @@ public class ArmSubsystem extends SubsystemBase {
         extension.setInverted(true);
 
         extensionPIDController = extension.getPIDController();
-        extensionPIDController.setP(0.02);
+        extensionPIDController.setP(0.0);
         extensionPIDController.setI(0.0);
         extensionPIDController.setD(0.0);
+        extensionPIDController.setOutputRange(-0.25, 0.25);
 
     }
 
     public void setArmMotor(double pos) {
-        if(armPosition.equals(ArmPosition.GRAB) && getLimitSwitch())
+        if(armPosition.equals(ArmPosition.GRAB) && getLimitSwitch()) // arm bottomed out in turntable
             return;
         double armPos = pos + armEncoderOffset;
         armMotor.setVoltage(armPIDController.calculate(getArmEncoderPosition(), armPos) + armFFController.calculate(Math.toRadians(armPos), 1.0));
+    }
+
+    public double getExtMotorSpeed() {
+        return extension.get();
     }
 
     public void setExtensionMotor(double speed) {
@@ -117,7 +122,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void setExtensionPositionPID(double setpoint) {
-        extensionPIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0);
+        extensionPIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
     }
 
     public ExtensionPosition getExtensionPosition() {

@@ -4,54 +4,46 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
-import frc.robot.subsystems.CompressorSubsystem;
 import frc.robot.Constants;
 
-public class ResetArmCommand extends CommandBase {
-  /** Creates a new ResetCommand. */
-  private final ArmSubsystem m_armSubsystem = ArmSubsystem.getInstance();
-  private final CompressorSubsystem compressorSubsystem = CompressorSubsystem.getInstance();
-  private final ClawSubsystem m_clawSubsystem = ClawSubsystem.getInstance();
-  private boolean check = false;
-
-  public ResetArmCommand() {
+public class DropAndRetract extends CommandBase {
+  /** Creates a new DropAndRetract. */
+  ArmSubsystem m_armSubsystem = ArmSubsystem.getInstance();
+  ClawSubsystem m_clawSubsystem = ClawSubsystem.getInstance();
+  boolean check = false;
+  public DropAndRetract() {
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_armSubsystem, m_clawSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     check = false;
-    m_armSubsystem.setArmPosition(Constants.ArmPosition.START);
-    m_clawSubsystem.clawCloseAction();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    compressorSubsystem.update();
-    if (m_armSubsystem.getLimitSwitch())
-      m_armSubsystem.setExtensionMotor(-0.25);
+    m_clawSubsystem.clawOpenAction();
+    if (m_armSubsystem.getLimitSwitch()) {
+      m_armSubsystem.setExtensionMotor(-0.35);
+      check = false;
+    }
     else {
       m_armSubsystem.resetExtensionMotor();
       m_armSubsystem.setExtensionPosition(Constants.ExtensionPosition.RETRACT);
+      m_armSubsystem.setExtensionMotor(0.0);
       check = true;
     }
   }
 
-  private boolean almostEqual(double a, double b, double eps){
-    return Math.abs(a-b) < eps;
-  }
-
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    SmartDashboard.putBoolean("end", true);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

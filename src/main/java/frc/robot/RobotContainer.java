@@ -48,14 +48,14 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         // Autonomous selector options
-        kAutoStartDelaySeconds = Shuffleboard.getTab("Live")
-                .add("Auto Delay", 0)
-                .withWidget(BuiltInWidgets.kNumberSlider)
-                .withProperties((Map.of("Min", 0, "Max", 10, "Block increment", 1)))
-                .getEntry();
-        autoChooser.setDefaultOption("Regular Auto", new AutoGroup());
-        autoChooser.addOption("Nothing", Commands.waitSeconds(5));
-        autoChooser.addOption("Auto Balance", swerveSubsystem.autoBalance());
+        // kAutoStartDelaySeconds = Shuffleboard.getTab("Live")
+        //         .add("Auto Delay", 0)
+        //         .withWidget(BuiltInWidgets.kNumberSlider)
+        //         .withProperties((Map.of("Min", 0, "Max", 10, "Block increment", 1)))
+        //         .getEntry();
+        // autoChooser.setDefaultOption("Regular Auto", new AutoGroup());
+        // autoChooser.addOption("Nothing", Commands.waitSeconds(5));
+        // autoChooser.addOption("Auto Balance", swerveSubsystem.autoBalance());
         // Configure default commands
         swerveSubsystem.setDefaultCommand(
             // The left stick controls translation of the robot.
@@ -134,15 +134,18 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        swerveSubsystem.getTimer().reset();
-        return Commands.sequence(
-                Commands.race(
-                        Commands.sequence(
-                                Commands.run(
-                                        ()->swerveSubsystem.drive(0.5/kMaxSpeedMetersPerSecond,
-                                                0,0,true),swerveSubsystem).until(()->swerveSubsystem.getTimer().get() > 5.0))));
+        
+        return new AutoGroup();
+    }
+}
+
+//swerveSubsystem.getTimer().reset();
+        // return Commands.sequence(
+        //         Commands.race(
+        //                 Commands.sequence(
+        //                         Commands.run(
+        //                                 ()->swerveSubsystem.drive(0.5/kMaxSpeedMetersPerSecond,
+        //                                         0,0,true),swerveSubsystem).until(()->swerveSubsystem.getTimer().get() > 5.0))));
 //                new AutoPlace());
 //                autoChooser.getSelected());
 //                swerveSubsystem.autoBalance());
-    }
-}

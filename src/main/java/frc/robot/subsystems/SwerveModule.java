@@ -44,9 +44,9 @@ public class SwerveModule extends SubsystemBase {
                     kaDriveVoltSecondsSquaredPerMeter,
                     kvDriveVoltSecondsSquaredPerMeter);
 
-    private final ProfiledPIDController m_turningPIDController
-            = new ProfiledPIDController(1, 0, 0,
-            new TrapezoidProfile.Constraints(2 * Math.PI, 2 * Math.PI));
+    // private final ProfiledPIDController m_turningPIDController
+    //         = new ProfiledPIDController(1, 0, 0,
+    //         new TrapezoidProfile.Constraints(2 * Math.PI, 2 * Math.PI));
 
     public SwerveModule(
             int moduleNumber,
