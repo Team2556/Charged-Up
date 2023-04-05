@@ -72,14 +72,14 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         // Autonomous selector options
-        kAutoStartDelaySeconds = Shuffleboard.getTab("Live")
-                .add("Auto Delay", 0)
-                .withWidget(BuiltInWidgets.kNumberSlider)
-                .withProperties((Map.of("Min", 0, "Max", 10, "Block increment", 1)))
-                .getEntry();
-        autoChooser.setDefaultOption("Regular Auto", new AutoGroup());
-        autoChooser.addOption("Nothing", Commands.waitSeconds(5));
-        autoChooser.addOption("Auto Balance", swerveSubsystem.autoBalance());
+        // kAutoStartDelaySeconds = Shuffleboard.getTab("Live")
+        //         .add("Auto Delay", 0)
+        //         .withWidget(BuiltInWidgets.kNumberSlider)
+        //         .withProperties((Map.of("Min", 0, "Max", 10, "Block increment", 1)))
+        //         .getEntry();
+        // autoChooser.setDefaultOption("Regular Auto", new AutoGroup());
+        // autoChooser.addOption("Nothing", Commands.waitSeconds(5));
+        // autoChooser.addOption("Auto Balance", swerveSubsystem.autoBalance());
         // Configure default commands
         swerveSubsystem.setDefaultCommand(
             // The left stick controls translation of the robot.
