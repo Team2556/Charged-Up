@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.function.DoubleSupplier;
 
 public class ArmControl extends CommandBase {
@@ -19,8 +19,7 @@ public class ArmControl extends CommandBase {
 
     public enum ArmState {
         MANUAL,
-        AUTO_PICKUP,
-        AUTONOMOUS
+        AUTO_PICKUP
     }
     
     public ArmControl(DoubleSupplier armStick, DoubleSupplier extensionStick) {
@@ -34,6 +33,7 @@ public class ArmControl extends CommandBase {
     public void initialize() {
         timer.start();
         firstAutoLoop = true;
+                
     }
 
     @Override
@@ -99,7 +99,9 @@ public class ArmControl extends CommandBase {
                 m_armSubsystem.setArmMotor(m_armSubsystem.getArmPosition().getPosition());
                 firstAutoLoop = true;
                 break;
+
             case AUTO_PICKUP:
+            
                 if(Math.abs(armStick.getAsDouble()) > 0.5 || Math.abs(extensionStick.getAsDouble()) > 0.5 || !m_armSubsystem.getArmPosition().equals(Constants.ArmPosition.GRAB)) {
                     armState = ArmState.MANUAL;
                     return;
@@ -123,9 +125,9 @@ public class ArmControl extends CommandBase {
 
                 if(!m_armSubsystem.getCones())
                     m_clawSubsystem.clawPullAction();
+
                 m_armSubsystem.setExtensionPositionPID(m_armSubsystem.getExtensionPosition().getPosition());
-                break;
-                case AUTONOMOUS:
+                
                 break;
 
             }

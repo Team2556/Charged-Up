@@ -9,24 +9,14 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import java.util.List;
-
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonTargetSortMode;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.PhotonCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.Photon;
 
 import java.util.Map;
 
@@ -46,40 +36,26 @@ public class RobotContainer {
     private final SwerveSubsystem     swerveSubsystem             = SwerveSubsystem.getInstance();
     private final ArmSubsystem        armSubsystem                = ArmSubsystem.getInstance();
     private final IntakeSubsystem     intakeSubsystem             = IntakeSubsystem.getInstance();
-  Photon photonSubsystem = new Photon();
-  PhotonCommand run = new PhotonCommand(photonSubsystem, null, swerveSubsystem);
 
     private final CommandXboxController xbox1 =
         new CommandXboxController(Constants.OperatorConstants.kDriverControllerPort);
     private final CommandXboxController xbox2 =
             new CommandXboxController(Constants.OperatorConstants.kMechanismControllerPort);
-    PhotonCamera camera = new PhotonCamera("photonvision");
-    PhotonPipelineResult result = camera.getLatestResult();
-            PhotonTargetSortMode sortMode = PhotonTargetSortMode.Centermost; 
-            PhotonTrackedTarget target = result.getBestTarget();
-            int targetID = target.getFiducialId(); 
-                SmartDashboard.putNumber("targetID", targetID);
-                System.out.println(targetID);
-                System.out.println("Hi");
 
     private final SendableChooser<Command> autoChooser = new SendableChooser<>();
     private GenericEntry kAutoStartDelaySeconds;
-    photonSubsystem.setDefaultCommand(
-      new PhotonCommand(
-        photonSubsystem,
-        xbox1.y(), swerveSubsystem));}
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         // Autonomous selector options
-        kAutoStartDelaySeconds = Shuffleboard.getTab("Live")
-                .add("Auto Delay", 0)
-                .withWidget(BuiltInWidgets.kNumberSlider)
-                .withProperties((Map.of("Min", 0, "Max", 10, "Block increment", 1)))
-                .getEntry();
-        autoChooser.setDefaultOption("Regular Auto", new AutoGroup());
-        autoChooser.addOption("Nothing", Commands.waitSeconds(5));
-        autoChooser.addOption("Auto Balance", swerveSubsystem.autoBalance());
+        // kAutoStartDelaySeconds = Shuffleboard.getTab("Live")
+        //         .add("Auto Delay", 0)
+        //         .withWidget(BuiltInWidgets.kNumberSlider)
+        //         .withProperties((Map.of("Min", 0, "Max", 10, "Block increment", 1)))
+        //         .getEntry();
+        // autoChooser.setDefaultOption("Regular Auto", new AutoGroup());
+        // autoChooser.addOption("Nothing", Commands.waitSeconds(5));
+        // autoChooser.addOption("Auto Balance", swerveSubsystem.autoBalance());
         // Configure default commands
         swerveSubsystem.setDefaultCommand(
             // The left stick controls translation of the robot.

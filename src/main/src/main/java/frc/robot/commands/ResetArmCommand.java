@@ -17,6 +17,7 @@ public class ResetArmCommand extends CommandBase {
   private final CompressorSubsystem compressorSubsystem = CompressorSubsystem.getInstance();
   private final ClawSubsystem m_clawSubsystem = ClawSubsystem.getInstance();
   private boolean check = false;
+
   public ResetArmCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -25,7 +26,6 @@ public class ResetArmCommand extends CommandBase {
   @Override
   public void initialize() {
     check = false;
-    ArmControl.setArmState(ArmControl.ArmState.MANUAL);
     m_armSubsystem.setArmPosition(Constants.ArmPosition.START);
     m_clawSubsystem.clawCloseAction();
   }
@@ -41,15 +41,6 @@ public class ResetArmCommand extends CommandBase {
       m_armSubsystem.setExtensionPosition(Constants.ExtensionPosition.RETRACT);
       check = true;
     }
-      // m_armSubsystem.setArmMotor(m_armSubsystem.getArmPosition().getPosition());
-      // if(almostEqual(m_armSubsystem.getArmPosition().getPosition(), m_armSubsystem.getArmEncoderPosition(), 15)) {
-      //   check = true;
-      // } else {
-      //   check = false;
-      // }
-      
-    
-    // SmartDashboard.putBoolean("first test", false);
   }
 
   private boolean almostEqual(double a, double b, double eps){
