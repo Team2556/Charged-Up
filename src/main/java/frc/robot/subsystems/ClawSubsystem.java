@@ -9,14 +9,13 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.Ports.*;
 
 public class ClawSubsystem extends SubsystemBase {
     private final static ClawSubsystem instance = getInstance();
-    private final DoubleSolenoid grabSolenoid = new DoubleSolenoid(
+    public final DoubleSolenoid grabSolenoid = new DoubleSolenoid(
           pneumaticHubCANID, PneumaticsModuleType.REVPH, grabSolenoidForward, grabSolenoidReverse);
     private final CANSparkMax clawSpin = new CANSparkMax(clawNeoPort, MotorType.kBrushless);
     private final Timer timer = new Timer();
@@ -30,11 +29,15 @@ public class ClawSubsystem extends SubsystemBase {
     }
 
     public void clawCloseAction() {
-        grabSolenoid.set(DoubleSolenoid.Value.kReverse);
+        grabSolenoid.set(DoubleSolenoid.Value.kReverse);   
     }
 
     public void clawReset() {
         grabSolenoid.set(DoubleSolenoid.Value.kOff);
+    }
+
+    public String clawCheck() {
+        return grabSolenoid.get().toString();
     }
 
     public void clawOpenCloseButton(boolean rBumper, boolean lBumper) {

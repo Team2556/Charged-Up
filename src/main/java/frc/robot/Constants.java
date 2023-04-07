@@ -19,16 +19,16 @@ public final class Constants {
     public static int kTimeoutMs = 30;
 
     public enum ArmPosition {
-        START(-109.0),
+        START(-109.0), // arm homed in turntable (default)
         GRAB(-109.0),
-        INTAKE(-90.0 - 4.0),
+        INTAKE(-90.0 - 4.0), // move arm out of the way for game piece to enter turntable
         CONE_LOW(-75.0),
         CONE_MEDIUM(-20.0),
         CONE_HIGH(5.0),
         CUBE_LOW(-75.0),
         CUBE_MEDIUM(-25.0),
         CUBE_HIGH(0.0),
-        SLIDE_GRAB(0.0);
+        SLIDE_GRAB(0.0); //? manually operating arm extension
 
         private final double position;
 

@@ -38,17 +38,14 @@ public class AutoGroup extends SequentialCommandGroup {
 // Add your commands in the addCommands() call, e.g.
    // addCommands(new FooCommand(), new BarCommand());
    addCommands(
+
+    // new DropAndRetract(),
+    // new DriveBackByOdometry(2.25, true)); 
+    new AutoBalance());  
+
+    //new AutoBalance();
     // new ResetArmCommand(),
     // new ArmToOut(),
     // new DriveForwardByOdometry(),
-    // new DropAndRetract(),
-    // new DriveBackByOdometry(0.0, false),    
-    // new DriveSideways(),
-    // new DriveBackByOdometry(2.0, false));
-
-    new ResetArmCommand(),
-    new ArmToOut(),
-    new DriveForwardByOdometry(),
-    new DropAndRetract(),
-    new DriveBackByOdometry(2.0, true));   
+}
 }

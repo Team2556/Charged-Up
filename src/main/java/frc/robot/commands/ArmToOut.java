@@ -4,14 +4,11 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
-import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.Constants;
-import frc.robot.Constants.ExtensionPosition;
 
 public class ArmToOut extends CommandBase {
   /** Creates a new ArmToOut. */
@@ -42,7 +39,10 @@ public class ArmToOut extends CommandBase {
     m_armSubsystem.setArmMotor(m_armSubsystem.getArmPosition().getPosition());
     // m_armSubsystem.setExtensionMotor(0.25);
     SmartDashboard.putNumber("ext spd", m_armSubsystem.getExtMotorSpeed());
-    m_armSubsystem.setExtensionPositionPID(extensionPos); //m_armSubsystem.getExtensionPosition().getPosition());
+
+    //double check which comand is actually controlling the extension out
+    
+    //m_armSubsystem.setExtensionPositionPID(extensionPos); //m_armSubsystem.getExtensionPosition().getPosition());
     if (m_armSubsystem.getExtensionEncoderPosition() <= extensionPos) {
       m_armSubsystem.setExtensionMotor(0.45);
       ctr++;

@@ -8,15 +8,11 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
-import java.util.function.Supplier;
 
 import static frc.robot.Constants.Ports.*;
 import static frc.robot.Constants.*;
@@ -35,6 +31,7 @@ public class ArmSubsystem extends SubsystemBase {
     private Constants.ExtensionPosition extensionPosition = Constants.ExtensionPosition.RESET;
     // Toggle for Cone or Cube positions
     private boolean cones = true;
+    public double armspeed = 1.0;
 
     ArmSubsystem() {
         armMotor.configFactoryDefault();
@@ -52,17 +49,26 @@ public class ArmSubsystem extends SubsystemBase {
         extension.setInverted(true);
 
         extensionPIDController = extension.getPIDController();
-        extensionPIDController.setP(0.02);
+        extensionPIDController.setP(0.0);
         extensionPIDController.setI(0.0);
         extensionPIDController.setD(0.0);
+        extensionPIDController.setOutputRange(-0.25, 0.25);
 
     }
 
     public void setArmMotor(double pos) {
-        if(armPosition.equals(ArmPosition.GRAB) && getLimitSwitch())
+        if(armPosition.equals(ArmPosition.GRAB) && getLimitSwitch()) // arm bottomed out in turntable
             return;
         double armPos = pos + armEncoderOffset;
-        armMotor.setVoltage(armPIDController.calculate(getArmEncoderPosition(), armPos) + armFFController.calculate(Math.toRadians(armPos), 1.0));
+        armMotor.setVoltage(armPIDController.calculate(getArmEncoderPosition(), armPos) + armFFController.calculate(Math.toRadians(armPos), armspeed));
+    }
+
+    public void SetArmSpeed(double speed) {
+        armspeed = speed; 
+    }
+
+    public double getExtMotorSpeed() {
+        return extension.get();
     }
 
     public void setExtensionMotor(double speed) {
@@ -84,6 +90,8 @@ public class ArmSubsystem extends SubsystemBase {
     public boolean getLimitSwitch() {
         return limitSwitch.get();
     }
+
+    
 
     @Override
     public void periodic() {
@@ -117,7 +125,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void setExtensionPositionPID(double setpoint) {
-        extensionPIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0);
+        extensionPIDController.setReference(setpoint, CANSparkMax.ControlType.kPosition);
     }
 
     public ExtensionPosition getExtensionPosition() {

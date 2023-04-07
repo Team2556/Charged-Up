@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.Constants;
 
@@ -45,7 +44,7 @@ public class DriveBackByOdometry extends CommandBase {
     if(m_ArmDown && m_swerveSubsystem.getOdometry().getPoseMeters().getX() > 0)
     m_armSubsystem.setArmMotor(m_armSubsystem.getArmPosition().getPosition());
     if (m_swerveSubsystem.getOdometry().getPoseMeters().getX() < m_distance) {
-      m_swerveSubsystem.drive(0.2,0,0,true);
+      m_swerveSubsystem.drive(0.4,0,0,true);
       // m_swerveSubsystem.autoBalance();
       check = false;
     } else {
