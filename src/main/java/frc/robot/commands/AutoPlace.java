@@ -37,6 +37,7 @@ public class AutoPlace extends CommandBase {
     public void execute() {
         switch (state) {
             case START:
+            
                 if(firstLoop) {
                     swerveSubsystem.resetTimer();
                     swerveSubsystem.setIsFieldRelative(false);

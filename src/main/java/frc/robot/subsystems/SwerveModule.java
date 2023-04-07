@@ -7,13 +7,11 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utility.CtreUtils;
@@ -44,9 +42,9 @@ public class SwerveModule extends SubsystemBase {
                     kaDriveVoltSecondsSquaredPerMeter,
                     kvDriveVoltSecondsSquaredPerMeter);
 
-    private final ProfiledPIDController m_turningPIDController
-            = new ProfiledPIDController(1, 0, 0,
-            new TrapezoidProfile.Constraints(2 * Math.PI, 2 * Math.PI));
+    // private final ProfiledPIDController m_turningPIDController
+    //         = new ProfiledPIDController(1, 0, 0,
+    //         new TrapezoidProfile.Constraints(2 * Math.PI, 2 * Math.PI));
 
     public SwerveModule(
             int moduleNumber,

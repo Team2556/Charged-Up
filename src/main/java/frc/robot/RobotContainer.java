@@ -5,22 +5,13 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-
-import java.util.Map;
-
-import static frc.robot.Constants.Swerve.kMaxSpeedMetersPerSecond;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -48,14 +39,14 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         // Autonomous selector options
-        kAutoStartDelaySeconds = Shuffleboard.getTab("Live")
-                .add("Auto Delay", 0)
-                .withWidget(BuiltInWidgets.kNumberSlider)
-                .withProperties((Map.of("Min", 0, "Max", 10, "Block increment", 1)))
-                .getEntry();
-        autoChooser.setDefaultOption("Regular Auto", new AutoGroup());
-        autoChooser.addOption("Nothing", Commands.waitSeconds(5));
-        autoChooser.addOption("Auto Balance", swerveSubsystem.autoBalance());
+        // kAutoStartDelaySeconds = Shuffleboard.getTab("Live")
+        //         .add("Auto Delay", 0)
+        //         .withWidget(BuiltInWidgets.kNumberSlider)
+        //         .withProperties((Map.of("Min", 0, "Max", 10, "Block increment", 1)))
+        //         .getEntry();
+        // autoChooser.setDefaultOption("Regular Auto", new AutoGroup());
+        // autoChooser.addOption("Nothing", Commands.waitSeconds(5));
+        // autoChooser.addOption("Auto Balance", swerveSubsystem.autoBalance());
         // Configure default commands
         swerveSubsystem.setDefaultCommand(
             // The left stick controls translation of the robot.
@@ -124,7 +115,8 @@ public class RobotContainer {
         xbox1.a().onTrue(new InstantCommand(() -> SwerveDrive.setPrecisionMode(!SwerveDrive.getPrecisionMode())));
         xbox2.a().onTrue(new InstantCommand(() -> turntableSubsystem.setManualToggle(!turntableSubsystem.getManualToggle())));
         xbox2.y().onTrue(new InstantCommand(() -> armSubsystem.setCones(!armSubsystem.getCones())));
-        xbox2.x().onTrue(new InstantCommand(() -> ArmControl.setArmState(ArmControl.ArmState.AUTO_PICKUP)));
+        xbox2.x().onTrue(new InstantCommand(() -> ArmControl.setArmState(ArmControl.ArmState.AUTO_PICKUP2)));
+        xbox2.povRight().onTrue(new InstantCommand(() -> ArmControl.setArmState(ArmControl.ArmState.CONE_UP_PICKUP)));
     }
 
     /**
@@ -134,15 +126,17 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        swerveSubsystem.getTimer().reset();
-        return Commands.sequence(
-                Commands.race(
-                        Commands.sequence(
-                                Commands.run(
-                                        ()->swerveSubsystem.drive(0.5/kMaxSpeedMetersPerSecond,
-                                                0,0,true),swerveSubsystem).until(()->swerveSubsystem.getTimer().get() > 5.0))));
+        return new AutoGroup();
+    }
+}
+
+// swerveSubsystem.getTimer().reset();
+//         return Commands.sequence(
+//                 Commands.race(
+//                         Commands.sequence(
+//                                 Commands.run(
+//                                         ()->swerveSubsystem.drive(0.5/kMaxSpeedMetersPerSecond,
+//                                                 0,0,true), swerveSubsystem).until(()->swerveSubsystem.getTimer().get() > 5.0))));
 //                new AutoPlace());
 //                autoChooser.getSelected());
 //                swerveSubsystem.autoBalance());
-    }
-}

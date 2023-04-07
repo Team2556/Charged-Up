@@ -51,7 +51,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                     new CANSparkMax(Ports.backRightTurnMotor, CANSparkMaxLowLevel.MotorType.kBrushless),
                                     invertMotor(Ports.backRightDriveMotor),
                                     backRightCANCoderOffset)));
-    private final AHRS gyro = new AHRS();
+    public final AHRS gyro = new AHRS();
 
     private boolean isFieldRelative = false;
 
@@ -211,17 +211,21 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public CommandBase autoBalance() {
         return Commands.race(
+            
                 Commands.sequence(
                         Commands.run(
                                 ()->this.drive(2/kMaxSpeedMetersPerSecond,
+                                        0,0,true),this).until(()->this.getTimer().get() > 3.0),
+                        Commands.run(
+                                ()->this.drive(-2/kMaxSpeedMetersPerSecond,
                                         0,0,true),this).until(()->Math.abs(gyro.getPitch())>=18.0),
                         Commands.run(
-                                ()->this.drive(0.4/kMaxSpeedMetersPerSecond,
+                                ()->this.drive(-0.4/kMaxSpeedMetersPerSecond,
                                         0,0,true),this).until(()->Math.abs(gyro.getPitch())<=12.0)
                                 .alongWith(new InstantCommand(this::resetTimer)),
 //                        Commands.waitSeconds(0.5),
                         Commands.run(
-                                ()->this.drive(-0.5/kMaxSpeedMetersPerSecond,
+                                ()->this.drive(0.5/kMaxSpeedMetersPerSecond,
                                         0,0,true),this).until(()->Math.abs(gyro.getPitch())>=4.0 && timer.get() > 2.0),
                         Commands.run(this::setX,this)),
                         Commands.waitSeconds(15));
@@ -241,5 +245,9 @@ public class SwerveSubsystem extends SubsystemBase {
         if(instance == null)
             return new SwerveSubsystem();
         return instance;
+    }
+
+    public SwerveDriveOdometry getOdometry() {
+        return m_odometry;
     }
 }

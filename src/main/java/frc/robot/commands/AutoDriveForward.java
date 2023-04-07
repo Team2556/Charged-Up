@@ -25,7 +25,7 @@ public class AutoDriveForward extends CommandBase {
 
     @Override
     public void execute() {
-        if(firstRun) {
+       if(firstRun) {
             timer.reset();
             m_swerveSubsystem.setIsFieldRelative(false);
             firstRun = false;
@@ -34,7 +34,7 @@ public class AutoDriveForward extends CommandBase {
         if (m_armSubsystem.getLimitSwitch())
             m_armSubsystem.setExtensionMotor(-0.25);
         else {
-            m_armSubsystem.resetExtensionMotor();
+            m_armSubsystem.resetExtensionMotor(); 
             m_armSubsystem.setExtensionPosition(Constants.ExtensionPosition.RETRACT);
         }
         SmartDashboard.putNumber("Auto Timer", timer.get());
